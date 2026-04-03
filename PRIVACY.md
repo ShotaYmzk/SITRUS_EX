@@ -16,5 +16,7 @@
 
 ## お問い合わせ
 
-不具合・要望は GitHub の Issues からお願いします。  
-https://github.com/ShotaYmzk/SITRUS_EX/issues
+不具合・要望は GitHub の Issues またはメールでお願いします。
+
+- https://github.com/ShotaYmzk/SITRUS_EX/issues  
+- shotaymzk@gmail.com
