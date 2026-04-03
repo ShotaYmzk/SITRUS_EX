@@ -1,0 +1,1432 @@
+@import url('https://fonts.googleapis.com/css2?family=BIZ+UDP+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap');
+
+:root {
+    --sc-brand-font: 'Chakra Petch', sans-serif;
+}
+
+/* ログイン CTA の円錐ボーダー／シャイン用（対応ブラウザのみ） */
+@property --sc-angle-1 {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: -75deg;
+}
+
+@property --sc-angle-2 {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: -45deg;
+}
+
+/* ==========================================================================
+   Login Page
+   ========================================================================== */
+
+/*
+ * Liquid Glass 風（CSS / backdrop-filter）
+ * 参考: https://ruri.design/blog/liquid-glass ・ https://github.com/archisvaze/liquid-glass
+ * （WebGL/SVG の屈折デモは拡張には載せず、blur + 飽和 + 多層ハイライトで近似）
+ */
+body.sitrus-ex-active {
+    --sc-glass-blur: 22px;
+    --sc-glass-sat: 1.45;
+    --sc-glass-surface: rgba(255, 255, 255, 0.22);
+    --sc-glass-surface-hover: rgba(255, 255, 255, 0.32);
+    --sc-glass-edge: rgba(255, 255, 255, 0.5);
+    --sc-glass-edge-soft: rgba(255, 255, 255, 0.22);
+    --sc-glass-shadow:
+        0 12px 48px rgba(0, 0, 0, 0.14),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+    --sc-glass-ink: #18181b;
+    --sc-login-btn-hover-time: 400ms;
+    --sc-login-btn-hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+    font-family: 'BIZ UDP Gothic', sans-serif !important;
+
+    /* 下地（写真は #sc-login-bg-slider 側） */
+    background-color: #64748b !important;
+    height: 100vh !important;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* ログイン背景（横スライド切り替え・content.js が挿入） */
+body.sitrus-ex-active #sc-login-bg-slider {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+body.sitrus-ex-active .sc-login-bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    will-change: transform;
+}
+
+/* ドットグリッド（参考 UI の SVG に相当） */
+body.sitrus-ex-active::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.14) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* --- 左上ブランド — ガラスなし（タイトルはフラット） --- */
+#sc-logo-container {
+    position: absolute;
+    top: 6vh;
+    left: 4vw;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    max-width: min(98vw, 1200px);
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+#sc-logo-container .sc-brand-title {
+    font-family: var(--sc-brand-font) !important;
+    font-weight: bold;
+    font-size: clamp(4.35rem, 12vw, 6.6rem);
+    letter-spacing: 0.12em;
+    line-height: 1.15;
+    color: #ffffff;
+    text-shadow:
+        0 0 20px rgba(255, 255, 255, 0.35),
+        0 2px 4px rgba(0, 0, 0, 0.45),
+        0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Pacifico は手書き系のため少し締める */
+html[data-sitrus-brand-font='pacifico'] #sc-logo-container .sc-brand-title {
+    font-weight: normal !important;
+    letter-spacing: 0.06em;
+}
+
+/* ログインページのレイアウト調整 */
+body.sitrus-ex-active .container {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    padding-bottom: 16vh !important;
+}
+
+/* ログインボックスをリセット */
+body.sitrus-ex-active .login-box {
+    position: relative;
+    z-index: 2;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100%;
+    max-width: 400px;
+    padding: 0;
+    isolation: isolate;
+}
+
+/* 入力フォーム */
+.hidden-form {
+    display: none !important;
+}
+
+body.sitrus-ex-active .form-group label {
+    font-size: 0.9rem;
+    margin-bottom: clamp(3px, 0.5svw, 5px);
+    color: #27272a !important;
+    font-weight: 600;
+}
+
+body.sitrus-ex-active .form-group input,
+body.sitrus-ex-active .form-group .form-control {
+    background: rgba(255, 255, 255, 0.88) !important;
+    border: 1px solid rgba(255, 255, 255, 0.65) !important;
+    border-radius: 10px !important;
+    color: #18181b !important;
+}
+
+/* ログインボタン — liquid glass（wrap + 影 + 円錐アウトライン／参考実装ベース） */
+body.sitrus-ex-active .sc-login-button-wrap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    border-radius: 999vw;
+    background: transparent;
+    pointer-events: none;
+    font-size: clamp(1.1rem, 4.2vw, 1.75rem);
+    transition: all var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease);
+}
+
+body.sitrus-ex-active .sc-button-shadow {
+    --shadow-cuttoff-fix: 2em;
+    position: absolute;
+    width: calc(100% + var(--shadow-cuttoff-fix));
+    height: calc(100% + var(--shadow-cuttoff-fix));
+    top: calc(0% - var(--shadow-cuttoff-fix) / 2);
+    left: calc(0% - var(--shadow-cuttoff-fix) / 2);
+    filter: blur(clamp(2px, 0.125em, 12px));
+    -webkit-filter: blur(clamp(2px, 0.125em, 12px));
+    overflow: visible;
+    pointer-events: none;
+}
+
+body.sitrus-ex-active .sc-button-shadow::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border-radius: 999vw;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+    width: calc(100% - var(--shadow-cuttoff-fix) - 0.25em);
+    height: calc(100% - var(--shadow-cuttoff-fix) - 0.25em);
+    top: calc(var(--shadow-cuttoff-fix) - 0.5em);
+    left: calc(var(--shadow-cuttoff-fix) - 0.875em);
+    padding: 0.125em;
+    box-sizing: border-box;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    transition: all var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease);
+    overflow: visible;
+    opacity: 1;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton {
+    --border-width: clamp(1px, 0.0625em, 4px);
+    all: unset;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    pointer-events: auto;
+    z-index: 3;
+    font-family: 'BIZ UDP Gothic', sans-serif !important;
+    background: linear-gradient(
+        -75deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.05)
+    ) !important;
+    border-radius: 999vw !important;
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+        0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.2),
+        0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
+        0 0 0 0 rgba(255, 255, 255, 1) !important;
+    backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+    -webkit-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+    transition: all var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease);
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton:hover {
+    transform: scale(0.975);
+    backdrop-filter: blur(0.01em);
+    -webkit-backdrop-filter: blur(0.01em);
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+        0 0.15em 0.05em -0.1em rgba(0, 0, 0, 0.25),
+        0 0 0.05em 0.1em inset rgba(255, 255, 255, 0.5),
+        0 0 0 0 rgba(255, 255, 255, 1) !important;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap .sc-login-btn-label {
+    position: relative;
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: inherit !important;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    font-size: 1em;
+    color: rgba(50, 50, 50, 1) !important;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 0em 0.25em 0.05em rgba(0, 0, 0, 0.1);
+    transition: all var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease);
+    padding-inline: 1.5em;
+    padding-block: 0.875em;
+    text-align: center;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton:hover .sc-login-btn-label {
+    text-shadow: 0.025em 0.025em 0.025em rgba(0, 0, 0, 0.12);
+}
+
+body.sitrus-ex-active .sc-login-button-wrap .sc-login-btn-label::after {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 1;
+    width: calc(100% - var(--border-width));
+    height: calc(100% - var(--border-width));
+    top: calc(0% + var(--border-width) / 2);
+    left: calc(0% + var(--border-width) / 2);
+    box-sizing: border-box;
+    border-radius: 999vw;
+    overflow: clip;
+    background: linear-gradient(
+        var(--sc-angle-2),
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.5) 40% 50%,
+        rgba(255, 255, 255, 0) 55%
+    );
+    z-index: 3;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    background-repeat: no-repeat;
+    transition:
+        background-position calc(var(--sc-login-btn-hover-time) * 1.25) var(--sc-login-btn-hover-ease),
+        --sc-angle-2 calc(var(--sc-login-btn-hover-time) * 1.25) var(--sc-login-btn-hover-ease);
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton:hover .sc-login-btn-label::after {
+    background-position: 25% 50%;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton:active .sc-login-btn-label::after {
+    background-position: 50% 15%;
+    --sc-angle-2: -15deg;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    body.sitrus-ex-active .sc-login-button-wrap .sc-login-btn-label::after,
+    body.sitrus-ex-active .sc-login-button-wrap #loginButton:active .sc-login-btn-label::after {
+        --sc-angle-2: -45deg;
+    }
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border-radius: 999vw;
+    width: calc(100% + var(--border-width));
+    height: calc(100% + var(--border-width));
+    top: calc(0% - var(--border-width) / 2);
+    left: calc(0% - var(--border-width) / 2);
+    padding: var(--border-width);
+    box-sizing: border-box;
+    background:
+        conic-gradient(
+            from var(--sc-angle-1) at 50% 50%,
+            rgba(0, 0, 0, 0.5),
+            rgba(0, 0, 0, 0) 5% 40%,
+            rgba(0, 0, 0, 0.5) 50%,
+            rgba(0, 0, 0, 0) 60% 95%,
+            rgba(0, 0, 0, 0.5)
+        ),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    transition:
+        all var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease),
+        --sc-angle-1 500ms ease;
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton:hover::after {
+    --sc-angle-1: -125deg;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap #loginButton:active::after {
+    --sc-angle-1: -75deg;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    body.sitrus-ex-active .sc-login-button-wrap #loginButton::after,
+    body.sitrus-ex-active .sc-login-button-wrap #loginButton:hover::after,
+    body.sitrus-ex-active .sc-login-button-wrap #loginButton:active::after {
+        --sc-angle-1: -75deg;
+    }
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:hover) .sc-button-shadow {
+    filter: blur(clamp(2px, 0.0625em, 6px));
+    -webkit-filter: blur(clamp(2px, 0.0625em, 6px));
+    transition: filter var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease);
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:hover) .sc-button-shadow::after {
+    top: calc(var(--shadow-cuttoff-fix) - 0.875em);
+    opacity: 1;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:active) {
+    transform: rotate3d(1, 0, 0, 25deg);
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:active) #loginButton {
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+        0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.2),
+        0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
+        0 0.225em 0.05em 0 rgba(0, 0, 0, 0.05),
+        0 0.25em 0 0 rgba(255, 255, 255, 0.75),
+        inset 0 0.25em 0.05em 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:active) .sc-button-shadow {
+    filter: blur(clamp(2px, 0.125em, 12px));
+    -webkit-filter: blur(clamp(2px, 0.125em, 12px));
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:active) .sc-button-shadow::after {
+    top: calc(var(--shadow-cuttoff-fix) - 0.5em);
+    opacity: 0.75;
+}
+
+body.sitrus-ex-active .sc-login-button-wrap:has(#loginButton:active) .sc-login-btn-label {
+    text-shadow: 0.025em 0.25em 0.05em rgba(0, 0, 0, 0.12);
+}
+
+/* wrap 未適用時のみ（#loginButton が .login-box の直接子のとき） */
+body.sitrus-ex-active .login-box > #loginButton {
+    background: var(--sc-glass-surface) !important;
+    backdrop-filter: blur(var(--sc-glass-blur)) saturate(var(--sc-glass-sat));
+    -webkit-backdrop-filter: blur(var(--sc-glass-blur)) saturate(var(--sc-glass-sat));
+    border: 1px solid var(--sc-glass-edge) !important;
+    border-radius: clamp(14px, 1.5svw, 18px) !important;
+    color: var(--sc-glass-ink) !important;
+    font-size: 1.8rem !important;
+    font-weight: bold;
+    letter-spacing: 0.18em;
+    padding: clamp(12px, 1.5svh, 15px) clamp(30px, 4svw, 40px) !important;
+    width: 100%;
+    box-shadow: var(--sc-glass-shadow);
+    transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+body.sitrus-ex-active .login-box > #loginButton:hover {
+    background: var(--sc-glass-surface-hover) !important;
+    transform: scale(1.015);
+    cursor: pointer;
+    box-shadow:
+        0 16px 56px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* --- 教職員向けトグル --- */
+#sc-toggle-wrapper {
+    margin-top: clamp(10px, 1.5svh, 15px);
+    text-align: center;
+    position: relative;
+}
+
+#sc-faculty-toggle {
+    --border-width: clamp(1px, 0.0625em, 3px);
+    position: relative;
+    isolation: isolate;
+    color: rgba(50, 50, 50, 1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-shadow: 0 0.12em 0.04em rgba(0, 0, 0, 0.08);
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(4px, 0.6svw, 6px);
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(
+        -75deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.22),
+        rgba(255, 255, 255, 0.05)
+    ) !important;
+    backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+    -webkit-backdrop-filter: blur(clamp(1px, 0.125em, 4px));
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+        0 0.2em 0.1em -0.1em rgba(0, 0, 0, 0.18),
+        0 0 0.08em 0.2em inset rgba(255, 255, 255, 0.18);
+    transition:
+        all var(--sc-login-btn-hover-time) var(--sc-login-btn-hover-ease),
+        --sc-angle-1 500ms ease;
+    user-select: none;
+}
+
+#sc-faculty-toggle::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border-radius: 999px;
+    width: calc(100% + var(--border-width));
+    height: calc(100% + var(--border-width));
+    top: calc(0% - var(--border-width) / 2);
+    left: calc(0% - var(--border-width) / 2);
+    padding: var(--border-width);
+    box-sizing: border-box;
+    background:
+        conic-gradient(
+            from var(--sc-angle-1) at 50% 50%,
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0) 5% 40%,
+            rgba(0, 0, 0, 0.45) 50%,
+            rgba(0, 0, 0, 0) 60% 95%,
+            rgba(0, 0, 0, 0.45)
+        ),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.45);
+    pointer-events: none;
+}
+
+#sc-faculty-toggle:hover {
+    transform: scale(0.985);
+    --sc-angle-1: -125deg;
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.55),
+        0 0.12em 0.05em -0.08em rgba(0, 0, 0, 0.22),
+        0 0 0.05em 0.12em inset rgba(255, 255, 255, 0.45);
+}
+
+#sc-faculty-toggle:active {
+    --sc-angle-1: -75deg;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    #sc-faculty-toggle:hover,
+    #sc-faculty-toggle:active {
+        --sc-angle-1: -75deg;
+        transform: none;
+    }
+}
+
+/* トグル矢印 */
+.sc-toggle-arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+#sc-faculty-toggle.is-open .sc-toggle-arrow {
+    transform: rotate(90deg);
+}
+
+
+/* フォーム表示/非表示（教職員向け）— 認証ボタンと同系の liquid glass */
+body.sitrus-ex-active .form-group {
+    --border-width: clamp(1px, 0.0625em, 4px);
+    --sc-form-radius: clamp(14px, 1.5svw, 18px);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    min-width: clamp(200px, 50svw, 280px);
+    z-index: 100;
+
+    background: linear-gradient(
+        -75deg,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0.24),
+        rgba(255, 255, 255, 0.06)
+    ) !important;
+    backdrop-filter: blur(clamp(8px, 0.75em, 22px)) saturate(var(--sc-glass-sat));
+    -webkit-backdrop-filter: blur(clamp(8px, 0.75em, 22px)) saturate(var(--sc-glass-sat));
+    border: none !important;
+    box-shadow:
+        inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+        inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.45),
+        0 0.35em 0.2em -0.15em rgba(0, 0, 0, 0.15),
+        0 0 0.12em 0.25em inset rgba(255, 255, 255, 0.15);
+    padding: clamp(10px, 2svw, 15px);
+    border-radius: var(--sc-form-radius);
+    margin-top: clamp(8px, 1svh, 10px);
+    margin-bottom: 0;
+    color: var(--sc-glass-ink);
+    text-align: left;
+    box-sizing: border-box;
+    isolation: isolate;
+
+    opacity: 1;
+    visibility: visible;
+    max-height: clamp(100px, 20svh, 150px);
+    overflow: hidden;
+    transition:
+        opacity 0.3s ease,
+        max-height 0.3s ease,
+        padding 0.3s ease,
+        margin 0.3s ease,
+        --sc-angle-1 500ms ease;
+}
+
+body.sitrus-ex-active .form-group::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border-radius: var(--sc-form-radius);
+    width: calc(100% + var(--border-width));
+    height: calc(100% + var(--border-width));
+    top: calc(0% - var(--border-width) / 2);
+    left: calc(0% - var(--border-width) / 2);
+    padding: var(--border-width);
+    box-sizing: border-box;
+    background:
+        conic-gradient(
+            from var(--sc-angle-1) at 50% 50%,
+            rgba(0, 0, 0, 0.42),
+            rgba(0, 0, 0, 0) 5% 40%,
+            rgba(0, 0, 0, 0.42) 50%,
+            rgba(0, 0, 0, 0) 60% 95%,
+            rgba(0, 0, 0, 0.42)
+        ),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.48));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.48);
+    pointer-events: none;
+}
+
+body.sitrus-ex-active .form-group label,
+body.sitrus-ex-active .form-group input,
+body.sitrus-ex-active .form-group .form-control {
+    position: relative;
+    z-index: 1;
+}
+
+/* 非表示時 */
+body.sitrus-ex-active .form-group.sc-form-hidden {
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* バージョン表記 — 同系 liquid glass（文言は従来どおり） */
+#sc-version-text {
+    --border-width: clamp(1px, 0.05em, 2px);
+    position: absolute;
+    bottom: 2vh;
+    right: 2vw;
+    z-index: 10;
+    isolation: isolate;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    color: #fafafa;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--sc-brand-font) !important;
+    text-shadow: 0 0.08em 0.12em rgba(0, 0, 0, 0.4);
+    border: none;
+    background: linear-gradient(
+        -75deg,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.06)
+    ) !important;
+    backdrop-filter: blur(clamp(6px, 0.5em, 16px)) saturate(1.35);
+    -webkit-backdrop-filter: blur(clamp(6px, 0.5em, 16px)) saturate(1.35);
+    box-shadow:
+        inset 0 0.1em 0.1em rgba(0, 0, 0, 0.06),
+        inset 0 -0.1em 0.1em rgba(255, 255, 255, 0.38),
+        0 0.22em 0.12em -0.08em rgba(0, 0, 0, 0.18),
+        0 0 0.08em 0.18em inset rgba(255, 255, 255, 0.12);
+    transition: --sc-angle-1 500ms ease;
+}
+
+#sc-version-text::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border-radius: 999px;
+    width: calc(100% + var(--border-width));
+    height: calc(100% + var(--border-width));
+    top: calc(0% - var(--border-width) / 2);
+    left: calc(0% - var(--border-width) / 2);
+    padding: var(--border-width);
+    box-sizing: border-box;
+    background:
+        conic-gradient(
+            from var(--sc-angle-1) at 50% 50%,
+            rgba(0, 0, 0, 0.38),
+            rgba(0, 0, 0, 0) 5% 40%,
+            rgba(0, 0, 0, 0.38) 50%,
+            rgba(0, 0, 0, 0) 60% 95%,
+            rgba(0, 0, 0, 0.38)
+        ),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.42));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.42);
+    pointer-events: none;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+    #sc-logo-container {
+        top: 3vh;
+        left: 3vw;
+        max-width: calc(100vw - 6vw);
+    }
+
+    /* 狭い画面でははみ出しを抑えつつ、おおむね3倍相当を維持 */
+    #sc-logo-container .sc-brand-title {
+        font-size: clamp(2.75rem, 11vw, 4.5rem);
+    }
+
+    body.sitrus-ex-active .sc-login-button-wrap {
+        font-size: clamp(1rem, 3.8vw, 1.45rem);
+    }
+
+    body.sitrus-ex-active .sc-login-button-wrap .sc-login-btn-label {
+        padding-block: 0.75em;
+        padding-inline: 1.1em;
+    }
+
+    /* wrap 前のフォールバック（直接 #loginButton が login-box の子のとき） */
+    body.sitrus-ex-active .login-box > #loginButton {
+        font-size: 1.5rem !important;
+        padding: clamp(10px, 1.2svh, 12px) clamp(15px, 2.5svw, 20px) !important;
+    }
+}
+
+/* ==========================================================================
+   Navbar Brand Styling
+   ========================================================================== */
+
+/* ブランド部分 */
+.navbar-brand {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 0.3em;
+}
+
+.navbar-brand-main {
+    display: inline;
+    font-family: var(--sc-brand-font) !important;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+html[data-sitrus-brand-font='pacifico'] .navbar-brand-main {
+    font-weight: normal !important;
+    letter-spacing: 0.06em;
+}
+
+
+/* ==========================================================================
+   Dashboard — 認証後 UI（薄いグレー統一・コントラスト優先）
+   元ページのピーチ／マゼンタ／濃色サイドバーは CSS で上書き（HTML 不要）
+   ========================================================================== */
+
+html.sitrus-ex-dashboard-html {
+    scroll-behavior: smooth;
+}
+
+/* ----- サイドバー格納（左端の固定トグル・列レイアウト） ----- */
+.sc-sidebar-toggle-btn {
+    position: fixed;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10500;
+    width: 30px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--sc-dx-line, #d4d4d8);
+    border-radius: 0 10px 10px 0;
+    background: #fafafa;
+    box-shadow: 0 1px 4px rgba(24, 24, 27, 0.1);
+    cursor: pointer;
+    color: #3f3f46;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sc-sidebar-toggle-btn:hover {
+    background: #f4f4f5;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.12);
+}
+
+.sc-sidebar-toggle-icon::before {
+    content: '◀';
+    font-size: 11px;
+    line-height: 1;
+    display: block;
+}
+
+body.sitrus-ex-dashboard.sitrus-ex-sidebar-collapsed .sc-sidebar-toggle-icon::before {
+    content: '▶';
+}
+
+body.sitrus-ex-dashboard.sitrus-ex-sidebar-collapsed [data-sc-sidebar-col] {
+    flex: 0 0 0 !important;
+    max-width: 0 !important;
+    width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    border: none !important;
+    min-height: 0 !important;
+}
+
+body.sitrus-ex-dashboard.sitrus-ex-sidebar-collapsed [data-sc-main-col] {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+body.sitrus-ex-dashboard {
+    /* Zinc 系ライトグレー（派手な色を使わない） */
+    --sc-dx-ink: #27272a;
+    --sc-dx-ink-muted: #52525b;
+    --sc-dx-ink-faint: #71717a;
+    --sc-dx-line: #d4d4d8;
+    --sc-dx-line-soft: #e4e4e7;
+    --sc-dx-page: #ececef;
+    --sc-dx-surface: #f4f4f5;
+    --sc-dx-surface-raised: #fafafa;
+    --sc-dx-accent: #3f3f46;
+    --sc-dx-accent-hover: #27272a;
+    --sc-dx-accent-ring: #52525b;
+    --sc-dx-sidebar-bg: #e4e4e7;
+    --sc-dx-sidebar-hover: #d4d4d8;
+    --sc-dx-sidebar-ink: #27272a;
+    --sc-dx-radius-lg: 14px;
+    --sc-dx-radius-md: 10px;
+    --sc-dx-shadow-1: 0 1px 3px rgba(24, 24, 27, 0.06), 0 8px 24px -8px rgba(24, 24, 27, 0.1);
+    --sc-dx-font-base: clamp(1.08rem, 1.16vw, 1.24rem);
+    --sc-dx-font-body: clamp(1.04rem, 1.1vw, 1.16rem);
+    --sc-dx-font-title: clamp(1.45rem, 1.8vw, 1.75rem);
+
+    font-family: 'BIZ UDP Gothic', 'Hiragino Sans', system-ui, sans-serif !important;
+    font-size: var(--sc-dx-font-base) !important;
+    line-height: 1.65 !important;
+    letter-spacing: 0.01em !important;
+    color: var(--sc-dx-ink) !important;
+    background: linear-gradient(180deg, #f4f4f5 0%, var(--sc-dx-page) 100%) !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* トップバー：紙面のように薄い下線のみ */
+body.sitrus-ex-dashboard .navbar {
+    min-height: 60px !important;
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.45rem !important;
+    background: var(--sc-dx-surface-raised) !important;
+    border-bottom: 1px solid var(--sc-dx-line-soft) !important;
+    box-shadow: none !important;
+}
+
+body.sitrus-ex-dashboard .navbar-brand-main {
+    font-family: var(--sc-brand-font) !important;
+    font-size: clamp(1.15rem, 1.35vw, 1.38rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    color: var(--sc-dx-ink) !important;
+    text-shadow: none !important;
+}
+
+body.sitrus-ex-dashboard #userName,
+body.sitrus-ex-dashboard #JpnEngMode {
+    font-size: clamp(0.98rem, 1.05vw, 1.08rem) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    border: 1px solid var(--sc-dx-line) !important;
+    background: var(--sc-dx-surface-raised) !important;
+    color: var(--sc-dx-ink) !important;
+    transition: border-color 0.2s ease, background 0.2s ease !important;
+}
+
+body.sitrus-ex-dashboard #userName:hover,
+body.sitrus-ex-dashboard #JpnEngMode:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: var(--sc-dx-accent-ring) !important;
+    background: #f4f4f5 !important;
+}
+
+body.sitrus-ex-dashboard #JpnEngMode {
+    margin-left: 0.45rem !important;
+}
+
+body.sitrus-ex-dashboard .nav-tabs,
+body.sitrus-ex-dashboard .tab-content,
+body.sitrus-ex-dashboard .tab-pane {
+    background-color: transparent !important;
+    border: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* サイドバー：薄グレー面（縦余白を最小化し、スクロール不要で一覧できるよう圧縮） */
+body.sitrus-ex-dashboard .sidebar-sticky {
+    background: var(--sc-dx-sidebar-bg) !important;
+    border: 1px solid var(--sc-dx-line) !important;
+    border-radius: var(--sc-dx-radius-lg) !important;
+    padding: 0.35rem 0.45rem 0.45rem !important;
+    margin: 0.2rem 0 0.2rem 0.2rem !important;
+    box-shadow: var(--sc-dx-shadow-1) !important;
+    height: auto !important;
+    max-height: calc(100vh - 56px) !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    min-width: min(100%, 280px) !important;
+    color: var(--sc-dx-sidebar-ink) !important;
+}
+
+body.sitrus-ex-dashboard .nav-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: stretch;
+    gap: 0;
+    border-bottom: 1px solid var(--sc-dx-line) !important;
+    margin: 0 0 0.3rem !important;
+    padding: 0 !important;
+}
+
+body.sitrus-ex-dashboard .nav-tabs .nav-item {
+    flex: 1 1 0;
+    text-align: center;
+}
+
+body.sitrus-ex-dashboard .nav-tabs .nav-link {
+    color: var(--sc-dx-ink-faint) !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: clamp(0.88rem, 0.95vw, 0.98rem) !important;
+    font-weight: 600 !important;
+    padding: 0.28rem 0.15rem 0.4rem !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    border-radius: 0 !important;
+    transition: color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+body.sitrus-ex-dashboard .nav-tabs .nav-link:hover {
+    color: var(--sc-dx-ink) !important;
+    background: transparent !important;
+}
+
+body.sitrus-ex-dashboard .nav-tabs .nav-link.active {
+    color: var(--sc-dx-ink) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: inset 0 -2px 0 0 var(--sc-dx-accent) !important;
+    font-weight: 700 !important;
+}
+
+body.sitrus-ex-dashboard .nav {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* メニュー：コンパクト（縦スクロールを避ける） */
+body.sitrus-ex-dashboard .tab-pane a.button_list {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+    background: var(--sc-dx-surface-raised) !important;
+    border: 1px solid var(--sc-dx-line-soft) !important;
+    border-radius: 8px !important;
+    border-left: 2px solid transparent !important;
+    color: var(--sc-dx-sidebar-ink) !important;
+    padding: 0.28rem 0.45rem !important;
+    margin-bottom: 0.12rem !important;
+    margin-top: 0 !important;
+    font-size: clamp(0.9rem, 0.98vw, 1rem) !important;
+    font-weight: 500 !important;
+    line-height: 1.25 !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+    width: 100%;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+
+body.sitrus-ex-dashboard .tab-pane a.button_list:hover {
+    background: var(--sc-dx-sidebar-hover) !important;
+    border-left-color: var(--sc-dx-accent-ring) !important;
+    transform: none !important;
+}
+
+body.sitrus-ex-dashboard .tab-pane a.button_list img {
+    margin-right: 0.45rem !important;
+    width: 18px !important;
+    height: 18px !important;
+    object-fit: contain;
+    filter: none !important;
+    opacity: 0.92;
+    flex-shrink: 0;
+}
+
+body.sitrus-ex-dashboard .tab-pane a.button_list:first-child {
+    margin-top: 0 !important;
+}
+
+body.sitrus-ex-dashboard .tab-content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+body.sitrus-ex-dashboard .sidebar-sticky .tab-pane {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.sitrus-ex-dashboard .sidebar-sticky .tab-content > .tab-pane {
+    padding-top: 0 !important;
+}
+
+/* サイドバー周りの Bootstrap 余白を打ち消し */
+body.sitrus-ex-dashboard .sidebar-sticky .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+body.sitrus-ex-dashboard .sidebar-sticky [class*='col'] {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+body.sitrus-ex-dashboard .sidebar-sticky .nav {
+    margin-bottom: 0 !important;
+}
+
+body.sitrus-ex-dashboard main,
+body.sitrus-ex-dashboard [class^="_navbar_fixed_top_slide"] {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+body.sitrus-ex-dashboard [class^="_navbar_fixed_top_slide"] .container {
+    background: var(--sc-dx-surface-raised) !important;
+    border-radius: var(--sc-dx-radius-lg) !important;
+    padding: clamp(0.85rem, 1.6vw, 1.35rem) !important;
+    margin-top: 0.35rem !important;
+    margin-bottom: 0.65rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: min(100%, 1680px) !important;
+    box-shadow: var(--sc-dx-shadow-1) !important;
+    border: 1px solid var(--sc-dx-line-soft) !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+}
+
+body.sitrus-ex-dashboard .jumbotron {
+    background: var(--sc-dx-surface) !important;
+    border: 1px solid var(--sc-dx-line) !important;
+    border-radius: var(--sc-dx-radius-md) !important;
+    padding: clamp(0.65rem, 1.2vw, 1rem) clamp(0.85rem, 1.4vw, 1.2rem) !important;
+    margin-bottom: clamp(0.55rem, 1.2vh, 0.85rem) !important;
+}
+
+body.sitrus-ex-dashboard .jumbotron,
+body.sitrus-ex-dashboard .jumbotron p,
+body.sitrus-ex-dashboard .container p {
+    font-size: var(--sc-dx-font-body) !important;
+    color: var(--sc-dx-ink-muted) !important;
+    line-height: 1.82 !important;
+}
+
+body.sitrus-ex-dashboard h3 {
+    font-family: var(--sc-brand-font) !important;
+    font-size: clamp(1.15rem, 1.45vw, 1.45rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    color: var(--sc-dx-ink) !important;
+    margin-bottom: 0.45rem !important;
+    line-height: 1.28 !important;
+}
+
+body.sitrus-ex-dashboard h3 img {
+    width: clamp(22px, 2vw, 26px) !important;
+    height: auto !important;
+    margin-right: 0 !important;
+}
+
+body.sitrus-ex-dashboard #System_contents,
+body.sitrus-ex-dashboard #Subjects_scheduled_to_acquired {
+    background: #f4f4f5 !important;
+    border: 1px solid var(--sc-dx-line) !important;
+    border-left: 4px solid var(--sc-dx-accent-ring) !important;
+    border-radius: 0 var(--sc-dx-radius-md) var(--sc-dx-radius-md) 0 !important;
+    padding: 0.65rem 0.85rem !important;
+    font-size: clamp(0.95rem, 1.02vw, 1.05rem) !important;
+    line-height: 1.6 !important;
+    color: var(--sc-dx-ink-muted) !important;
+}
+
+body.sitrus-ex-dashboard table {
+    font-size: clamp(0.88rem, 0.95vw, 0.98rem) !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+body.sitrus-ex-dashboard table thead th {
+    background: var(--sc-dx-line-soft) !important;
+    color: var(--sc-dx-ink) !important;
+    border-bottom: 1px solid var(--sc-dx-line) !important;
+    border-top: none !important;
+    font-weight: 700 !important;
+    padding: 0.45rem 0.45rem !important;
+    font-size: clamp(0.88rem, 0.95vw, 0.98rem) !important;
+    letter-spacing: 0.02em !important;
+    white-space: nowrap;
+}
+
+body.sitrus-ex-dashboard table td,
+body.sitrus-ex-dashboard table tbody th {
+    padding: 0.4rem 0.45rem !important;
+    border-color: var(--sc-dx-line-soft) !important;
+    vertical-align: middle !important;
+    line-height: 1.4 !important;
+    color: var(--sc-dx-ink) !important;
+    font-size: clamp(0.88rem, 0.95vw, 0.98rem) !important;
+}
+
+body.sitrus-ex-dashboard table tr:nth-child(even) td {
+    background: rgba(244, 244, 245, 0.85) !important;
+}
+
+body.sitrus-ex-dashboard .ag-theme-balham {
+    --ag-font-size: 13px;
+    --ag-font-family: 'BIZ UDP Gothic', system-ui, sans-serif;
+    --ag-header-height: 36px;
+    --ag-row-height: 34px;
+    --ag-cell-horizontal-padding: 8px;
+    --ag-header-foreground-color: #27272a;
+    --ag-header-background-color: #e4e4e7;
+    --ag-odd-row-background-color: #fafafa;
+    border-radius: var(--sc-dx-radius-md) !important;
+    overflow: auto !important;
+    max-height: min(70vh, calc(100vh - 220px)) !important;
+    border: 1px solid var(--sc-dx-line-soft) !important;
+}
+
+body.sitrus-ex-dashboard .ag-header {
+    border-bottom: 1px solid var(--sc-dx-line) !important;
+}
+
+body.sitrus-ex-dashboard .ag-header-cell-label {
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+}
+
+body.sitrus-ex-dashboard .ag-cell {
+    font-size: 0.82rem !important;
+    line-height: 1.38 !important;
+    color: var(--sc-dx-ink) !important;
+}
+
+body.sitrus-ex-dashboard .ag-header-cell {
+    border-right: 1px solid var(--sc-dx-line-soft) !important;
+}
+
+/* ページ内の主ボタン：グレー系（青・緑のデフォルトを置き換え） */
+body.sitrus-ex-dashboard .btn-primary {
+    background-color: var(--sc-dx-accent) !important;
+    border-color: var(--sc-dx-accent) !important;
+    color: #fafafa !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    padding: 0.55rem 1.15rem !important;
+    transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+
+body.sitrus-ex-dashboard .btn-primary:hover,
+body.sitrus-ex-dashboard .btn-primary:focus {
+    background-color: var(--sc-dx-accent-hover) !important;
+    border-color: var(--sc-dx-accent-hover) !important;
+    color: #fff !important;
+}
+
+body.sitrus-ex-dashboard .btn-success,
+body.sitrus-ex-dashboard .btn-info {
+    background-color: #52525b !important;
+    border-color: #52525b !important;
+    color: #fafafa !important;
+}
+
+body.sitrus-ex-dashboard .btn-success:hover,
+body.sitrus-ex-dashboard .btn-info:hover {
+    background-color: #3f3f46 !important;
+    border-color: #3f3f46 !important;
+}
+
+/* 旧HTMLの font 色・ピンク強調・インライン色を読みやすいグレーへ */
+body.sitrus-ex-dashboard font,
+body.sitrus-ex-dashboard font[color] {
+    color: var(--sc-dx-ink-muted) !important;
+}
+
+body.sitrus-ex-dashboard .jumbotron font,
+body.sitrus-ex-dashboard .jumbotron span[style*='color'],
+body.sitrus-ex-dashboard .container > .jumbotron p font {
+    color: var(--sc-dx-ink-muted) !important;
+}
+
+body.sitrus-ex-dashboard .jumbotron a,
+body.sitrus-ex-dashboard .container:not(.ag-theme-balham) a:not(.button_list):not(.btn) {
+    color: var(--sc-dx-accent-hover) !important;
+    text-decoration: underline !important;
+    text-underline-offset: 2px !important;
+}
+
+body.sitrus-ex-dashboard .jumbotron a:hover {
+    color: #18181b !important;
+}
+
+body.sitrus-ex-dashboard .text-primary,
+body.sitrus-ex-dashboard .text-danger,
+body.sitrus-ex-dashboard .text-warning,
+body.sitrus-ex-dashboard .text-success {
+    color: var(--sc-dx-ink-muted) !important;
+}
+
+body.sitrus-ex-dashboard a:focus-visible,
+body.sitrus-ex-dashboard button:focus-visible {
+    outline: 2px solid var(--sc-dx-accent-ring) !important;
+    outline-offset: 3px !important;
+}
+
+/* ==========================================================================
+   Loading Screen
+   ========================================================================== */
+
+#loading {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(165deg, #3f3f46 0%, #27272a 55%, #18181b 100%) !important;
+    backdrop-filter: blur(8px);
+    z-index: 9999 !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+#loading:not([style*='display: none']) {
+    display: flex !important;
+}
+
+#spinner {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 10000;
+    font-family: 'BIZ UDP Gothic', sans-serif !important;
+}
+
+#spinner .spinner-border {
+    width: clamp(3rem, 12svw, 4.5rem) !important;
+    height: clamp(3rem, 12svw, 4.5rem) !important;
+    border: 3px solid rgba(255, 255, 255, 0.2) !important;
+    border-top-color: #fff !important;
+    color: #fff !important;
+}
+
+#loading-text {
+    margin-top: clamp(1.25rem, 3svh, 2rem) !important;
+    font-size: clamp(1.15rem, 1.4vw, 1.35rem) !important;
+    color: #fff !important;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35) !important;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   Header Navigation（ログイン後以外でも #userName 等に効くが、上で dashboard 時を上書き）
+   ========================================================================== */
+
+#userName {
+    border-radius: 10px !important;
+    transition: all 0.2s ease !important;
+    font-family: 'BIZ UDP Gothic', sans-serif !important;
+}
+
+#userName:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+}
+
+#JpnEngMode {
+    border-radius: 10px !important;
+    transition: all 0.2s ease !important;
+    font-family: 'BIZ UDP Gothic', sans-serif !important;
+    margin-left: 0.5rem !important;
+}
+
+#JpnEngMode:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+
+div.modal.msg_box_YesNo {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background-color: rgba(28, 25, 23, 0.42) !important;
+    backdrop-filter: blur(6px) !important;
+    border-radius: 20px !important;
+}
+
+div.modal.msg_box_YesNo .modal-dialog {
+    width: min(92vw, 440px) !important;
+    max-width: 96% !important;
+    margin: auto !important;
+    height: auto !important;
+    display: block !important;
+    transform: none !important;
+    border: none !important;
+}
+
+div.modal.msg_box_YesNo .modal-content {
+    height: auto !important;
+    background-color: #fafaf9 !important;
+    border-radius: 14px !important;
+    border: 1px solid #e7e5e4 !important;
+    box-shadow: 0 24px 48px -12px rgba(28, 25, 23, 0.22) !important;
+    overflow: hidden !important;
+}
+
+div.modal.msg_box_YesNo .modal-header {
+    background-color: #fafaf9 !important;
+    border-bottom: 1px solid #e7e5e4 !important;
+    padding: 1.1rem 1.35rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+div.modal.msg_box_YesNo .modal-title {
+    color: #1c1917 !important;
+    font-weight: 600 !important;
+    font-size: clamp(1.15rem, 1.3vw, 1.3rem) !important;
+    margin: 0 !important;
+}
+
+div.modal.msg_box_YesNo .close {
+    color: #64748b !important;
+    font-size: 1.5rem !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+}
+
+div.modal.msg_box_YesNo .close:hover {
+    color: #1c1917 !important;
+}
+
+div.modal.msg_box_YesNo .modal-body1 {
+    background-color: #fafaf9 !important;
+    padding: 1.75rem 1.35rem !important;
+    text-align: center !important;
+}
+
+div.modal.msg_box_YesNo .jik_kakunin_body {
+    color: #57534e !important;
+    font-size: clamp(1.05rem, 1.15vw, 1.15rem) !important;
+    line-height: 1.75 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-weight: normal !important;
+}
+
+div.modal.msg_box_YesNo .modal-footer {
+    background-color: #fafaf9 !important;
+    border-top: none !important;
+    padding: 0 1.35rem 1.35rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 0.85rem !important;
+}
+
+div.modal.msg_box_YesNo .modal-footer .btn {
+    margin: 0 !important;
+    border-radius: 10px !important;
+    padding: 0.65rem 0 !important;
+    min-width: 7.5rem !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+div.modal.msg_box_YesNo .modal-footer .btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12) !important;
+}
+
+div.modal.msg_box_YesNo .modal-footer .btn-primary {
+    background-color: #3f3f46 !important;
+    color: #fafafa !important;
+    border: none !important;
+}
+
+div.modal.msg_box_YesNo .modal-footer .btn-secondary {
+    background-color: #e4e4e7 !important;
+    color: #27272a !important;
+    border: 1px solid #d4d4d8 !important;
+}

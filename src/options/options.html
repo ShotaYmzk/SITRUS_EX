@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SITRUS EX — 設定</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="wrap">
+    <h1>SITRUS EX</h1>
+    <p class="lead">ログイン画面の左上「SITRUS EX」やナビのブランド名に使うフォントを選べます。</p>
+
+    <fieldset class="font-fieldset">
+      <legend>ブランド用フォント</legend>
+      <div id="font-radios" class="font-radios"></div>
+    </fieldset>
+
+    <p class="hint">変更は保存と同時に SITRUS のタブへ反映されます（ページを開き直すと確実です）。</p>
+    <p id="status" class="status" aria-live="polite"></p>
+  </main>
+  <script src="../lib/brand-fonts.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
