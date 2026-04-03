@@ -6,6 +6,10 @@
 
 名前の **EX** は、**Extension（拡張機能）** と **「超（エクストラ）」** のかけ言葉です。公式の SITRUS そのものを置き換えるものではなく、あくまで閲覧環境の上に載せる「上乗せ」です。
 
+## 参考
+
+芝浦工業大学の SITRUS 向け Chrome 拡張として、[kazu-iroiro/sit-sitrus-coordinator](https://github.com/kazu-iroiro/sit-sitrus-coordinator)（**SITRUS Coordinator**）を参考に制作しました。本リポジトリは別プロジェクトであり、同拡張の派生版や公式の後継ではありません。
+
 ---
 
 ## できること（概要）
