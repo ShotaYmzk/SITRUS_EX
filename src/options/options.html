@@ -4,22 +4,75 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SITRUS EX — 設定</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="options.css" />
 </head>
 <body>
-  <main class="wrap">
-    <h1>SITRUS EX</h1>
-    <p class="lead">ログイン画面の左上「SITRUS EX」やナビのブランド名に使うフォントを選べます。</p>
+  <div class="page">
+    <div class="top-bar">
+      <header class="header">
+        <p class="eyebrow">Extension</p>
+        <h1 class="title">SITRUS EX</h1>
+        <p class="lead max-ch">
+          ログイン画面の左上タイトルやナビのブランド名に使うフォントを選べます。変更は保存と同時に SITRUS のタブへ反映されます（ページを開き直すと確実です）。
+        </p>
+      </header>
 
-    <fieldset class="font-fieldset">
-      <legend>ブランド用フォント</legend>
-      <div id="font-radios" class="font-radios"></div>
-    </fieldset>
+      <section class="theme-panel" aria-labelledby="theme-heading">
+        <h2 id="theme-heading" class="theme-panel__title">表示モード</h2>
+        <p class="theme-panel__sub">SITRUS 上の配色（ライト / ダーク）を切り替えます。既定はライトです。</p>
+        <div class="glass-theme" role="group" aria-labelledby="theme-heading">
+          <span class="glass-theme__label glass-theme__label--left" id="theme-label-light">ライト</span>
+          <button type="button" id="theme-toggle" class="glass-theme__btn" role="switch" aria-checked="false" aria-labelledby="theme-heading theme-label-light theme-label-dark">
+            <span class="glass-theme__track" aria-hidden="true">
+              <span class="glass-theme__thumb"></span>
+            </span>
+          </button>
+          <span class="glass-theme__label glass-theme__label--right" id="theme-label-dark">ダーク</span>
+        </div>
+      </section>
+    </div>
 
-    <p class="hint">変更は保存と同時に SITRUS のタブへ反映されます（ページを開き直すと確実です）。</p>
-    <p id="status" class="status" aria-live="polite"></p>
-  </main>
+    <section class="card" aria-labelledby="font-heading">
+      <div class="card__header">
+        <h2 id="font-heading" class="card__title">ブランド用フォント</h2>
+        <p class="card__subtitle">見出し・ロゴにのみ適用されます。</p>
+      </div>
+      <div id="font-radios" class="radio-list" role="radiogroup" aria-labelledby="font-heading"></div>
+    </section>
+
+    <section class="card card--login-bg" aria-labelledby="login-bg-heading">
+      <div class="card__header">
+        <h2 id="login-bg-heading" class="card__title">ログイン画面の背景</h2>
+        <p class="card__subtitle">
+          付属のキャンパス写真（プリセット）と、あなたの写真を混ぜて並べ替えられます。保存すると、開いている SITRUS
+          ログイン画面に反映されます（タブの再読み込みで確実です）。
+        </p>
+      </div>
+      <div class="login-bg-toolbar">
+        <label class="login-bg-btn login-bg-btn--primary">
+          <input type="file" id="login-bg-file" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+          自分の写真を追加
+        </label>
+        <div class="login-bg-add-preset">
+          <label for="login-bg-add-preset" class="login-bg-add-preset__label">プリセットを追加</label>
+          <select id="login-bg-add-preset" class="login-bg-select" aria-label="一覧に追加するプリセット画像">
+            <option value="">選択してください</option>
+          </select>
+        </div>
+        <button type="button" id="login-bg-reset" class="login-bg-btn login-bg-btn--ghost">初期状態に戻す</button>
+      </div>
+      <ul id="login-bg-list" class="login-bg-list" aria-label="背景スライドの順（上から表示順）"></ul>
+    </section>
+
+    <p class="hint max-ch">大学非公式の Chrome 拡張です。公式サポートの対象外です。</p>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </div>
+  <script src="../lib/theme-prefs.js"></script>
   <script src="../lib/brand-fonts.js"></script>
+  <script src="../lib/login-bg-prefs.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

@@ -1,31 +1,37 @@
 /**
  * ブランド表示用フォント（content / options 共通の定義）
  * MV3 の素のスクリプト向けに globalThis に載せる
+ * 既定は DESIGN.md の Geist
  */
 (function () {
     const STORAGE_KEY = 'sitrusExBrandFont';
 
+    const GF = 'https://fonts.googleapis.com/css2';
+
     const DEFINITIONS = {
-        'chakra-petch': {
-            label: 'Chakra Petch（既定）',
-            cssFamily: "'Chakra Petch', sans-serif",
-            googleHref:
-                'https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap',
+        geist: {
+            label: 'Geist（既定・DESIGN）',
+            cssFamily: "'Geist', 'Helvetica Neue', sans-serif",
+            googleHref: `${GF}?family=Geist:wght@400;500;600;700&display=swap`,
         },
-        'pacifico': {
+        'chakra-petch': {
+            label: 'Chakra Petch',
+            cssFamily: "'Chakra Petch', sans-serif",
+            googleHref: `${GF}?family=Chakra+Petch:wght@500;600;700&display=swap`,
+        },
+        pacifico: {
             label: 'Pacifico',
             cssFamily: "'Pacifico', cursive",
-            googleHref: 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap',
+            googleHref: `${GF}?family=Pacifico&display=swap`,
         },
-        'exo': {
+        exo: {
             label: 'Exo',
             cssFamily: "'Exo', sans-serif",
-            googleHref:
-                'https://fonts.googleapis.com/css2?family=Exo:wght@500;600;700&display=swap',
+            googleHref: `${GF}?family=Exo:wght@500;600;700&display=swap`,
         },
     };
 
-    const DEFAULT_FONT_ID = 'chakra-petch';
+    const DEFAULT_FONT_ID = 'geist';
 
     globalThis.SitrusExBrandFonts = {
         STORAGE_KEY,

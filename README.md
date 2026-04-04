@@ -33,6 +33,26 @@
 
 ---
 
+## Chrome ウェブストア（更新・提出用）
+
+1. リポジトリルートで次を実行し、提出用 ZIP を生成する。
+
+   ```bash
+   ./scripts/package-chrome-store.sh
+   ```
+
+   生成物: `SITRUS_EX-chrome-store-v<バージョン>.zip`（`manifest.json` の `version` に連動）
+
+2. [Chrome デベロッパー ダッシュボード](https://chrome.google.com/webstore/devconsole) で該当アイテムを開き、**新しいパッケージ** をアップロードする。
+
+3. **ストア提出時のチェックリスト（例）**
+   - **単一目的**: `https://sitrus.sic.shibaura-it.ac.jp/*` のみに内容スクリプトを注入（`manifest.json` の `matches` 参照）。
+   - **権限**: `storage` のみ（テーマ・背景・サイドバー状態など端末内設定）。
+   - **プライバシー**: 審査用に [PRIVACY.md](./PRIVACY.md) をストアの「プライバシー ポリシー」欄に載せる URL（例: GitHub の raw または GitHub Pages）を用意する。
+   - **ホームページ**: `manifest.json` の `homepage_url` と整合させる。
+
+---
+
 ## 非公式であること
 
 - 本ソフトウェアは **芝浦工業大学や SITRUS の運営とは無関係** の個人開発です。

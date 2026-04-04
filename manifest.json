@@ -1,14 +1,18 @@
 {
   "manifest_version": 3,
   "name": "SITRUS EX",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "芝浦工業大学の履修登録システム（SITRUS）の公式UIは出来が悪く使いづらい——Chrome拡張（Extension）で見た目と操作を底上げする「超EX」版。大学非公式。",
+  "homepage_url": "https://github.com/ShotaYmzk/SITRUS_EX",
   "icons": {
     "16": "assets/icons/icon-16x16.png",
     "48": "assets/icons/icon-48x48.png",
     "128": "assets/icons/icon-128x128.png"
   },
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "src/background/service-worker.js"
+  },
   "options_ui": {
     "page": "src/options/options.html",
     "open_in_tab": true
@@ -19,7 +23,12 @@
         "https://sitrus.sic.shibaura-it.ac.jp/*"
       ],
       "css": ["src/content/content.css"],
-      "js": ["src/lib/brand-fonts.js", "src/content/content.js"],
+      "js": [
+        "src/lib/theme-prefs.js",
+        "src/lib/brand-fonts.js",
+        "src/lib/login-bg-prefs.js",
+        "src/content/content.js"
+      ],
       "run_at": "document_end"
     }
   ],
