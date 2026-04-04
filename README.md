@@ -41,7 +41,7 @@
    ./scripts/package-chrome-store.sh
    ```
 
-   生成物: `SITRUS_EX-chrome-store-v<バージョン>.zip`（`manifest.json` の `version` に連動）
+   生成物: `download/SITRUS_EX-chrome-store-v<バージョン>.zip`（`manifest.json` の `version` に連動）
 
 2. [Chrome デベロッパー ダッシュボード](https://chrome.google.com/webstore/devconsole) で該当アイテムを開き、**新しいパッケージ** をアップロードする。
 

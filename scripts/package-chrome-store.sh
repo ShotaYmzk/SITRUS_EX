@@ -3,8 +3,10 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 VER=$(grep -m1 '"version"' "${ROOT}/manifest.json" | sed 's/.*"version": *"\([^"]*\)".*/\1/')
-OUT="${ROOT}/SITRUS_EX-chrome-store-v${VER}.zip"
+DOWNLOAD="${ROOT}/download"
+OUT="${DOWNLOAD}/SITRUS_EX-chrome-store-v${VER}.zip"
 cd "${ROOT}"
+mkdir -p "${DOWNLOAD}"
 rm -f "${OUT}"
 zip -r "${OUT}" manifest.json assets src -x "*.DS_Store" "*__MACOSX*"
 echo "Created: ${OUT}"
