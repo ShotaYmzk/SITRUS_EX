@@ -1,0 +1,368 @@
+/* 時間割一覧 — 独自テーブル + 公式 ag-Grid を視覚的に無効化 */
+
+body.sitrus-ex-timetable-mode #itiran_list {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+
+#sitrus-ex-timetable-root {
+  margin-bottom: 1.25rem;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  color: var(--sitrus-text, #1d1d1f);
+}
+
+.sitrus-ex-tb-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  background: var(--sitrus-panel-bg, rgba(255, 255, 255, 0.55));
+  border: 1px solid var(--sitrus-panel-border, rgba(0, 0, 0, 0.06));
+  border-radius: var(--sitrus-radius-sm, 10px);
+  box-shadow: var(--sitrus-shadow, 0 1px 8px rgba(0, 0, 0, 0.04));
+}
+
+.sitrus-ex-tb-search-wrap {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.sitrus-ex-tb-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.88rem;
+  border: 1px solid var(--sitrus-border, rgba(0, 0, 0, 0.08));
+  border-radius: 8px;
+  background: var(--sitrus-surface-active, #fff);
+  color: var(--sitrus-text, #1d1d1f);
+}
+
+.sitrus-ex-tb-search:focus {
+  outline: none;
+  border-color: var(--sitrus-accent, #0071e3);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.sitrus-ex-tb-selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  flex: 2 1 360px;
+  align-items: flex-end;
+}
+
+.sitrus-ex-tb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.sitrus-ex-tb-field-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--sitrus-text-secondary, rgba(0, 0, 0, 0.56));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.sitrus-ex-tb-select {
+  min-width: 120px;
+  max-width: 160px;
+  padding: 0.35rem 0.45rem;
+  font-size: 0.78rem;
+  border: 1px solid var(--sitrus-border, rgba(0, 0, 0, 0.08));
+  border-radius: 6px;
+  background: var(--sitrus-surface-active, #fff);
+  color: var(--sitrus-text, #1d1d1f);
+}
+
+.sitrus-ex-tb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
+.sitrus-ex-tb-btn {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--sitrus-border, rgba(0, 0, 0, 0.08));
+  border-radius: 8px;
+  background: var(--sitrus-btn-bg, rgba(0, 0, 0, 0.03));
+  color: var(--sitrus-text, #1d1d1f);
+}
+
+.sitrus-ex-tb-btn:hover {
+  background: var(--sitrus-btn-hover-bg, rgba(0, 0, 0, 0.06));
+}
+
+.sitrus-ex-tb-hint {
+  font-size: 0.68rem;
+  color: var(--sitrus-text-muted, rgba(0, 0, 0, 0.36));
+  max-width: 280px;
+  line-height: 1.35;
+}
+
+.sitrus-ex-tb-table-wrap {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--sitrus-radius-sm, 10px);
+  border: 1px solid var(--sitrus-grid-border, rgba(0, 0, 0, 0.04));
+  box-shadow: var(--sitrus-shadow, 0 1px 8px rgba(0, 0, 0, 0.04));
+  background: var(--sitrus-surface-active, #fff);
+}
+
+.sitrus-ex-tb-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.sitrus-ex-tb-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--sitrus-text-secondary, rgba(0, 0, 0, 0.56));
+  background: var(--sitrus-grid-header, rgba(245, 245, 247, 0.95));
+  border-bottom: 1px solid var(--sitrus-grid-border, rgba(0, 0, 0, 0.04));
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.sitrus-ex-tb-table tbody td {
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--sitrus-grid-border, rgba(0, 0, 0, 0.04));
+  color: var(--sitrus-text, #1d1d1f);
+  max-width: 420px;
+  vertical-align: top;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.sitrus-ex-tb-table tbody tr:hover {
+  background: var(--sitrus-grid-hover, rgba(0, 113, 227, 0.06));
+}
+
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd {
+  background: var(--sitrus-grid-odd, rgba(245, 245, 247, 0.5));
+}
+
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover {
+  background: var(--sitrus-grid-hover, rgba(0, 113, 227, 0.06));
+}
+
+.sitrus-ex-tb-th-check,
+.sitrus-ex-tb-td-check {
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  text-align: center;
+  padding-left: 0.35rem !important;
+  padding-right: 0.35rem !important;
+}
+
+/* 横スクロール時: [チェック][曜日][時限][科目名] を左に固定（本文は重なり順を下げる） */
+.sitrus-ex-tb-sticky-check,
+.sitrus-ex-tb-sticky.sitrus-ex-tb-sticky-c0,
+.sitrus-ex-tb-sticky.sitrus-ex-tb-sticky-c1,
+.sitrus-ex-tb-sticky.sitrus-ex-tb-sticky-c2 {
+  position: sticky;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.06);
+}
+
+/* 固定列の「通常行」背景は必ず不透明（下の列の文字が透けないようにする） */
+.sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-check {
+  left: 0;
+  z-index: 5;
+  background-color: #ffffff;
+}
+
+.sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c0 {
+  left: 44px;
+  z-index: 4;
+  min-width: 100px;
+  background-color: #ffffff;
+}
+
+.sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c1 {
+  left: 144px;
+  z-index: 3;
+  min-width: 72px;
+  background-color: #ffffff;
+}
+
+.sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c2 {
+  left: 216px;
+  z-index: 2;
+  min-width: 200px;
+  background-color: #ffffff;
+}
+
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c2 {
+  background-color: #ffffff;
+}
+
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody .sitrus-ex-tb-sticky-c2 {
+  background-color: #0f1011;
+}
+
+/* ヘッダ行: 上固定 + 左固定の交差（チェック角が最前面） */
+.sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-check {
+  left: 0;
+  z-index: 8;
+  background-color: #f5f5f7;
+}
+
+.sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c0 {
+  left: 44px;
+  z-index: 7;
+  min-width: 100px;
+  background-color: #f5f5f7;
+}
+
+.sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c1 {
+  left: 144px;
+  z-index: 6;
+  min-width: 72px;
+  background-color: #f5f5f7;
+}
+
+.sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c2 {
+  left: 216px;
+  z-index: 5;
+  min-width: 200px;
+  background-color: #f5f5f7;
+}
+
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c2 {
+  background-color: #f7f9fc;
+}
+
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table thead .sitrus-ex-tb-sticky-c2 {
+  background-color: #141516;
+}
+
+/* ホバー行の固定列: 半透明ホバー色は使わず実色（Apple 既定テーマ） */
+.sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-check,
+.sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c0,
+.sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c1,
+.sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c2 {
+  background-color: #eef4fc;
+}
+
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c2 {
+  background-color: #f4f6fb;
+}
+
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr:hover .sitrus-ex-tb-sticky-c2 {
+  background-color: #1a1c1f;
+}
+
+/* 交互のグレー行の固定列: 透過ではなく実色（ここが半透明だと横スクロールで文字が重なる） */
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-check,
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c0,
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c1,
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c2 {
+  background-color: #ebebed;
+}
+
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c2 {
+  background-color: #fafcfe;
+}
+
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd .sitrus-ex-tb-sticky-c2 {
+  background-color: #121314;
+}
+
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-check,
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c0,
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c1,
+.sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c2 {
+  background-color: #e2eaf5;
+}
+
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='light'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c2 {
+  background-color: #eef1f8;
+}
+
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-check,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c0,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c1,
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-table tbody tr.sitrus-ex-tb-odd:hover .sitrus-ex-tb-sticky-c2 {
+  background-color: #1c1e22;
+}
+
+.sitrus-ex-tb-foot {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--sitrus-text-secondary, rgba(0, 0, 0, 0.56));
+}
+
+.sitrus-ex-tb-link {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--sitrus-accent, #0071e3);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.sitrus-ex-tb-link:hover {
+  opacity: 0.92;
+}
+
+[data-sitrus-appearance='dark'] .sitrus-ex-tb-link {
+  color: #fff;
+}

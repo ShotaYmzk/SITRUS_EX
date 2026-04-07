@@ -20,6 +20,11 @@
   --anim--hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* ダークモード時はページ下地を暗く（スライドと協調） */
+[data-sitrus-appearance='dark'] html {
+  background-color: #0a0a0b !important;
+}
+
 /* ---- Reset body ---- */
 html {
   height: 100% !important;

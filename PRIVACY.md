@@ -8,7 +8,7 @@ SITRUS EX is an unofficial browser extension that changes the appearance of the 
 
 ## Data stored locally
 
-The extension uses Chrome’s `chrome.storage.local` API **only** to remember your selected **UI theme** (e.g. Apple / Stripe / Linear) on your device. This data:
+The extension uses Chrome’s `chrome.storage.local` API **only** to remember UI preferences on your device, such as **light/dark appearance**, **login background slide order** (including optional user-added images stored as data URLs), **whether to show your student ID in the navbar** (for screenshots), and related settings. This data:
 
 - Stays on your computer
 - Is not sent to the extension author or third parties
@@ -27,7 +27,7 @@ The extension injects CSS and JavaScript **only** on:
 - `https://sitrus.sic.shibaura-it.ac.jp/SITRUS/`
 - `https://sitrus.sic.shibaura-it.ac.jp/SITRUS/*/*`
 
-**Web accessible resources** (`assets/images/*`) are used only so the login page background slideshow can load bundled images from the extension package. No remote tracking.
+**Web accessible resources** (`assets/images/*` and `src/sitrus-page-bridge.js`) are used only so bundled images and a small page-context script can load from the extension package. No remote tracking.
 
 ## Contact
 

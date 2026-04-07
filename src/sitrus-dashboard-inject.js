@@ -1,5 +1,5 @@
 /**
- * SITRUS EX — Dashboard content script with Theme System + Sidebar Icons
+ * SITRUS EX — Dashboard（サイドバーアイコン + 設定: ライト/ダーク・プライバシー・ログイン背景）
  */
 (function () {
   'use strict';
@@ -36,7 +36,7 @@
   /* keyword → icon mapping for sidebar links */
   var ICON_MAP = [
     { keywords: ['時間割一覧', '時間割表', 'Timetable', 'JikItiran', 'JikHyoji'], icon: 'calendar' },
-    { keywords: ['履修登録', '登録', 'Registration', 'RishuToroku', 'Toroku'], icon: 'pencilSquare' },
+    { keywords: ['履修登録状況', '履修登録', '登録', 'Registration', 'RishuToroku', 'Toroku'], icon: 'pencilSquare' },
     { keywords: ['成績', 'Grade', 'Seiseki', 'GPA'], icon: 'chartBar' },
     { keywords: ['シラバス', 'Syllabus'], icon: 'bookOpen' },
     { keywords: ['お知らせ', '通知', 'Notice', 'Announce', 'Oshirase', 'Info'], icon: 'bell' },
@@ -73,52 +73,58 @@
   }
 
   /* ============================================================
-     Theme System
+     表示モード（ライト / ダーク）+ ログイン背景スライド
      ============================================================ */
-  var THEMES = [
-    {
-      id: 'apple',
-      name: 'Apple',
-      desc: 'Clean & Minimal',
-      swatch: { bg: '#f5f5f7', fg: '#1d1d1f', accent: '#0071e3' }
-    },
-    {
-      id: 'stripe',
-      name: 'Stripe',
-      desc: 'Warm & Professional',
-      swatch: { bg: '#f6f9fc', fg: '#061b31', accent: '#533afd' }
-    },
-    {
-      id: 'linear',
-      name: 'Linear',
-      desc: 'Dark Mode',
-      swatch: { bg: '#08090a', fg: '#f7f8f8', accent: '#7170ff' }
+  var DEFAULT_APPEARANCE = 'light';
+  var BUILTIN_BG_COUNT = 10;
+  var MAX_CUSTOM_IMAGES = 12;
+  var MAX_IMAGE_BYTES = 2.5 * 1024 * 1024;
+
+  function defaultLoginSlides() {
+    var a = [];
+    for (var i = 0; i < BUILTIN_BG_COUNT; i++) {
+      a.push({ kind: 'builtin', i: i });
     }
-  ];
-
-  var DEFAULT_THEME = 'apple';
-
-  function applyTheme(id) {
-    document.documentElement.setAttribute('data-sitrus-theme', id);
+    return a;
   }
 
-  function saveTheme(id) {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ sitrusTheme: id });
-    }
+  function applyAppearance(mode) {
+    var m = mode === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-sitrus-appearance', m);
   }
 
-  function loadTheme(cb) {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get('sitrusTheme', function (result) {
-        cb(result.sitrusTheme || DEFAULT_THEME);
-      });
+  /** true = ナビ右上の学籍番号・氏名を表示（既定）。false = スクリーンショット用に非表示 */
+  function applyNavbarUserVisibility(show) {
+    if (show) {
+      document.documentElement.removeAttribute('data-sitrus-hide-navbar-user');
     } else {
-      cb(DEFAULT_THEME);
+      document.documentElement.setAttribute('data-sitrus-hide-navbar-user', 'true');
     }
   }
 
-  loadTheme(function (id) { applyTheme(id); });
+  function migrateAndLoadAppearance(cb) {
+    if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) {
+      applyAppearance(DEFAULT_APPEARANCE);
+      applyNavbarUserVisibility(true);
+      cb();
+      return;
+    }
+    chrome.storage.local.get(['sitrusAppearance', 'sitrusTheme', 'sitrusShowStudentId'], function (r) {
+      var app = r.sitrusAppearance;
+      if (!app) {
+        app = r.sitrusTheme === 'linear' ? 'dark' : DEFAULT_APPEARANCE;
+        chrome.storage.local.set({ sitrusAppearance: app });
+        if (r.sitrusTheme != null) {
+          chrome.storage.local.remove('sitrusTheme');
+        }
+      }
+      applyAppearance(app);
+      applyNavbarUserVisibility(r.sitrusShowStudentId !== false);
+      cb();
+    });
+  }
+
+  migrateAndLoadAppearance(function () {});
 
   function ready(fn) {
     if (document.readyState !== 'loading') fn();
@@ -127,7 +133,7 @@
 
   ready(function () {
     /* ---- Version badge ---- */
-    var version = '2.0.0';
+    var version = '0.0.0';
     if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
       version = chrome.runtime.getManifest().version;
     }
@@ -174,6 +180,30 @@
       link.insertBefore(iconSpan, link.firstChild);
     });
 
+    /* ---- Jumbotron / page title icons (same SVG set as sidebar) ---- */
+    function h3TitleTextForMatch(h3) {
+      var clone = h3.cloneNode(true);
+      clone.querySelectorAll('img').forEach(function (n) { n.remove(); });
+      clone.querySelectorAll('.sitrus-ex-page-title-icon').forEach(function (n) { n.remove(); });
+      return clone.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    document.querySelectorAll(
+      '.jumbotron h3 img, ._navbar_fixed_top_slide h3 img, ._navbar_fixed_top_slide1 h3 img, ._navbar_fixed_top_slide2 h3 img'
+    ).forEach(function (img) {
+      var h3 = img.closest('h3');
+      if (!h3 || h3.querySelector('.sitrus-ex-page-title-icon')) return;
+      var titleText = h3TitleTextForMatch(h3);
+      var iconKey = matchIcon(titleText, '');
+      var iconSvg = ICONS[iconKey] || ICONS.cube;
+      img.style.display = 'none';
+      var iconSpan = document.createElement('span');
+      iconSpan.className = 'sitrus-ex-sidebar-icon sitrus-ex-page-title-icon';
+      iconSpan.setAttribute('aria-hidden', 'true');
+      iconSpan.innerHTML = iconSvg;
+      h3.insertBefore(iconSpan, h3.firstChild);
+    });
+
     /* ---- Settings gear button ---- */
     var engBtn = document.getElementById('JpnEngMode');
     if (!engBtn) return;
@@ -183,7 +213,7 @@
 
     var gearBtn = document.createElement('button');
     gearBtn.className = 'sitrus-ex-settings-btn';
-    gearBtn.title = 'SITRUS EX Theme';
+    gearBtn.title = 'SITRUS EX 設定';
     gearBtn.innerHTML = '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">'
       + '<path d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.062 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/>'
       + '</svg>';
@@ -192,7 +222,7 @@
     var engParent = engBtn.parentNode;
     engParent.parentNode.insertBefore(gearWrap, engParent.nextSibling);
 
-    /* ---- Theme picker popup ---- */
+    /* ---- 設定ポップアップ（ライト/ダーク・ログイン背景） ---- */
     var overlay = document.createElement('div');
     overlay.className = 'sitrus-ex-overlay';
     document.body.appendChild(overlay);
@@ -202,48 +232,318 @@
 
     var title = document.createElement('div');
     title.className = 'sitrus-ex-theme-popup-title';
-    title.textContent = 'Theme';
+    title.textContent = 'SITRUS EX 設定';
     popup.appendChild(title);
 
-    var currentTheme = document.documentElement.getAttribute('data-sitrus-theme') || DEFAULT_THEME;
-    var cards = [];
+    var secMode = document.createElement('div');
+    secMode.className = 'sitrus-ex-settings-section';
+    var secModeTitle = document.createElement('div');
+    secModeTitle.className = 'sitrus-ex-settings-section-title';
+    secModeTitle.textContent = '表示モード';
+    secMode.appendChild(secModeTitle);
 
-    THEMES.forEach(function (theme) {
-      var card = document.createElement('div');
-      card.className = 'sitrus-ex-theme-card';
-      if (theme.id === currentTheme) card.classList.add('active');
-      card.setAttribute('data-theme-id', theme.id);
+    var appearanceRow = document.createElement('div');
+    appearanceRow.className = 'sitrus-ex-appearance-row';
+    var btnLight = document.createElement('button');
+    btnLight.type = 'button';
+    btnLight.className = 'sitrus-ex-appearance-btn';
+    btnLight.textContent = 'ライト';
+    var btnDark = document.createElement('button');
+    btnDark.type = 'button';
+    btnDark.className = 'sitrus-ex-appearance-btn';
+    btnDark.textContent = 'ダーク';
+    appearanceRow.appendChild(btnLight);
+    appearanceRow.appendChild(btnDark);
+    secMode.appendChild(appearanceRow);
+    popup.appendChild(secMode);
 
-      var swatch = document.createElement('div');
-      swatch.className = 'sitrus-ex-theme-swatch';
-      swatch.style.cssText = 'background:' + theme.swatch.bg + ';color:' + theme.swatch.accent + ';';
-      swatch.textContent = 'Aa';
+    function syncAppearanceButtons() {
+      var m = document.documentElement.getAttribute('data-sitrus-appearance') || DEFAULT_APPEARANCE;
+      btnLight.classList.toggle('active', m === 'light');
+      btnDark.classList.toggle('active', m === 'dark');
+    }
+    syncAppearanceButtons();
 
-      var info = document.createElement('div');
-      info.className = 'sitrus-ex-theme-info';
+    function setAppearance(mode) {
+      applyAppearance(mode);
+      if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ sitrusAppearance: mode === 'dark' ? 'dark' : 'light' });
+      }
+      syncAppearanceButtons();
+    }
+    btnLight.addEventListener('click', function () { setAppearance('light'); });
+    btnDark.addEventListener('click', function () { setAppearance('dark'); });
 
-      var nameEl = document.createElement('div');
-      nameEl.className = 'sitrus-ex-theme-name';
-      nameEl.textContent = theme.name;
+    var secPrivacy = document.createElement('div');
+    secPrivacy.className = 'sitrus-ex-settings-section';
+    var secPrivacyTitle = document.createElement('div');
+    secPrivacyTitle.className = 'sitrus-ex-settings-section-title';
+    secPrivacyTitle.textContent = 'プライバシー';
+    secPrivacy.appendChild(secPrivacyTitle);
 
-      var descEl = document.createElement('div');
-      descEl.className = 'sitrus-ex-theme-desc';
-      descEl.textContent = theme.desc;
+    var privacyRow = document.createElement('div');
+    privacyRow.className = 'sitrus-ex-appearance-row';
+    var btnShowUser = document.createElement('button');
+    btnShowUser.type = 'button';
+    btnShowUser.className = 'sitrus-ex-appearance-btn';
+    btnShowUser.textContent = '学籍番号を表示';
+    var btnHideUser = document.createElement('button');
+    btnHideUser.type = 'button';
+    btnHideUser.className = 'sitrus-ex-appearance-btn';
+    btnHideUser.textContent = '非表示';
+    privacyRow.appendChild(btnShowUser);
+    privacyRow.appendChild(btnHideUser);
+    secPrivacy.appendChild(privacyRow);
 
-      info.appendChild(nameEl);
-      info.appendChild(descEl);
-      card.appendChild(swatch);
-      card.appendChild(info);
-      popup.appendChild(card);
-      cards.push(card);
+    var privacyHint = document.createElement('div');
+    privacyHint.className = 'sitrus-ex-settings-hint';
+    privacyHint.textContent =
+      'ストア用スクリーンショットなどで学籍番号・氏名を隠すときは「非表示」にしてください。撮影後は「表示」に戻せます。';
+    secPrivacy.appendChild(privacyHint);
+    popup.appendChild(secPrivacy);
 
-      card.addEventListener('click', function () {
-        applyTheme(theme.id);
-        saveTheme(theme.id);
-        currentTheme = theme.id;
-        cards.forEach(function (c) { c.classList.remove('active'); });
-        card.classList.add('active');
+    function syncPrivacyButtons() {
+      var hidden = document.documentElement.getAttribute('data-sitrus-hide-navbar-user') === 'true';
+      btnShowUser.classList.toggle('active', !hidden);
+      btnHideUser.classList.toggle('active', hidden);
+    }
+    syncPrivacyButtons();
+
+    function setNavbarUserVisibility(show) {
+      applyNavbarUserVisibility(show);
+      if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ sitrusShowStudentId: show });
+      }
+      syncPrivacyButtons();
+    }
+    btnShowUser.addEventListener('click', function () { setNavbarUserVisibility(true); });
+    btnHideUser.addEventListener('click', function () { setNavbarUserVisibility(false); });
+
+    var secBg = document.createElement('div');
+    secBg.className = 'sitrus-ex-settings-section';
+    var secBgTitle = document.createElement('div');
+    secBgTitle.className = 'sitrus-ex-settings-section-title';
+    secBgTitle.textContent = 'ログイン画面の背景スライド';
+    secBg.appendChild(secBgTitle);
+
+    var slidesListEl = document.createElement('div');
+    slidesListEl.className = 'sitrus-ex-slides-list';
+    secBg.appendChild(slidesListEl);
+
+    var slidesActions = document.createElement('div');
+    slidesActions.className = 'sitrus-ex-settings-actions';
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.className = 'sitrus-ex-settings-file';
+    fileInput.multiple = true;
+    var btnAddImg = document.createElement('button');
+    btnAddImg.type = 'button';
+    btnAddImg.className = 'sitrus-ex-settings-btn-secondary';
+    btnAddImg.textContent = '画像を追加';
+    var btnResetOrder = document.createElement('button');
+    btnResetOrder.type = 'button';
+    btnResetOrder.className = 'sitrus-ex-settings-btn-secondary';
+    btnResetOrder.textContent = '順序を初期化';
+    var btnClearCustom = document.createElement('button');
+    btnClearCustom.type = 'button';
+    btnClearCustom.className = 'sitrus-ex-settings-btn-secondary';
+    btnClearCustom.textContent = '追加画像をすべて削除';
+    slidesActions.appendChild(fileInput);
+    slidesActions.appendChild(btnAddImg);
+    slidesActions.appendChild(btnResetOrder);
+    slidesActions.appendChild(btnClearCustom);
+    secBg.appendChild(slidesActions);
+
+    var hint = document.createElement('div');
+    hint.className = 'sitrus-ex-settings-hint';
+    hint.textContent =
+      '公式の背景10枚と、追加した画像を並べ替えできます。画像はこの端末のブラウザ内にのみ保存されます（1枚あたり約2.5MBまで）。';
+    secBg.appendChild(hint);
+    popup.appendChild(secBg);
+
+    var loginSlidesState = defaultLoginSlides();
+
+    function saveLoginSlides() {
+      if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ sitrusLoginSlides: loginSlidesState });
+      }
+    }
+
+    function loadLoginSlidesFromStorage(cb) {
+      if (!chrome.storage || !chrome.storage.local) {
+        loginSlidesState = defaultLoginSlides();
+        cb();
+        return;
+      }
+      chrome.storage.local.get('sitrusLoginSlides', function (r) {
+        var s = r.sitrusLoginSlides;
+        if (!s || !Array.isArray(s) || s.length === 0) {
+          loginSlidesState = defaultLoginSlides();
+        } else {
+          loginSlidesState = s.filter(function (item) {
+            if (!item || !item.kind) return false;
+            if (item.kind === 'builtin') {
+              return typeof item.i === 'number' && item.i >= 0 && item.i < BUILTIN_BG_COUNT;
+            }
+            if (item.kind === 'custom') {
+              return typeof item.url === 'string' && item.url.indexOf('data:image') === 0;
+            }
+            return false;
+          });
+          if (loginSlidesState.length === 0) loginSlidesState = defaultLoginSlides();
+        }
+        cb();
       });
+    }
+
+    var BUILTIN_BG_PATHS = [
+      'assets/images/background_01.jpg',
+      'assets/images/background_02.jpg',
+      'assets/images/background_03.jpg',
+      'assets/images/background_04.jpg',
+      'assets/images/background_05.png',
+      'assets/images/background_06.png',
+      'assets/images/background_07.jpg',
+      'assets/images/background_08.png',
+      'assets/images/background_09.jpg',
+      'assets/images/background_10.png'
+    ];
+
+    function builtinLabel(idx) {
+      return '公式 #' + (idx + 1);
+    }
+
+    function renderSlidesList() {
+      slidesListEl.innerHTML = '';
+      loginSlidesState.forEach(function (item, idx) {
+        var row = document.createElement('div');
+        row.className = 'sitrus-ex-slide-row';
+        var thumb = document.createElement('img');
+        thumb.className = 'sitrus-ex-slide-thumb';
+        thumb.alt = '';
+        if (item.kind === 'builtin' && typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+          thumb.src = chrome.runtime.getURL(BUILTIN_BG_PATHS[item.i]);
+        } else if (item.kind === 'custom') {
+          thumb.src = item.url;
+        }
+        var lab = document.createElement('div');
+        lab.className = 'sitrus-ex-slide-label';
+        lab.textContent = item.kind === 'builtin' ? builtinLabel(item.i) : 'マイ画像';
+        var actions = document.createElement('div');
+        actions.className = 'sitrus-ex-slide-actions';
+        var bUp = document.createElement('button');
+        bUp.type = 'button';
+        bUp.textContent = '↑';
+        bUp.title = '上へ';
+        var bDown = document.createElement('button');
+        bDown.type = 'button';
+        bDown.textContent = '↓';
+        bDown.title = '下へ';
+        bUp.disabled = idx === 0;
+        bDown.disabled = idx === loginSlidesState.length - 1;
+        bUp.addEventListener('click', function () {
+          if (idx <= 0) return;
+          var t = loginSlidesState[idx - 1];
+          loginSlidesState[idx - 1] = loginSlidesState[idx];
+          loginSlidesState[idx] = t;
+          saveLoginSlides();
+          renderSlidesList();
+        });
+        bDown.addEventListener('click', function () {
+          if (idx >= loginSlidesState.length - 1) return;
+          var t = loginSlidesState[idx + 1];
+          loginSlidesState[idx + 1] = loginSlidesState[idx];
+          loginSlidesState[idx] = t;
+          saveLoginSlides();
+          renderSlidesList();
+        });
+        actions.appendChild(bUp);
+        actions.appendChild(bDown);
+        if (item.kind === 'custom') {
+          var bDel = document.createElement('button');
+          bDel.type = 'button';
+          bDel.textContent = '×';
+          bDel.title = '削除';
+          bDel.addEventListener('click', function () {
+            loginSlidesState.splice(idx, 1);
+            if (loginSlidesState.length === 0) loginSlidesState = defaultLoginSlides();
+            saveLoginSlides();
+            renderSlidesList();
+          });
+          actions.appendChild(bDel);
+        }
+        row.appendChild(thumb);
+        row.appendChild(lab);
+        row.appendChild(actions);
+        slidesListEl.appendChild(row);
+      });
+    }
+
+    loadLoginSlidesFromStorage(function () {
+      renderSlidesList();
+    });
+
+    btnAddImg.addEventListener('click', function () {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function () {
+      var files = fileInput.files;
+      if (!files || !files.length) return;
+      var customCount = loginSlidesState.filter(function (x) {
+        return x.kind === 'custom';
+      }).length;
+      var toRead = Math.min(files.length, MAX_CUSTOM_IMAGES - customCount);
+      var readIndex = 0;
+
+      function readNext() {
+        if (readIndex >= toRead) {
+          fileInput.value = '';
+          saveLoginSlides();
+          renderSlidesList();
+          return;
+        }
+        var f = files[readIndex];
+        if (f.size > MAX_IMAGE_BYTES) {
+          readIndex += 1;
+          readNext();
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          var url = ev.target && ev.target.result;
+          if (typeof url === 'string' && url.indexOf('data:image') === 0) {
+            loginSlidesState.push({ kind: 'custom', url: url });
+          }
+          readIndex += 1;
+          readNext();
+        };
+        reader.onerror = function () {
+          readIndex += 1;
+          readNext();
+        };
+        reader.readAsDataURL(f);
+      }
+      readNext();
+    });
+
+    btnResetOrder.addEventListener('click', function () {
+      var customs = loginSlidesState.filter(function (x) {
+        return x.kind === 'custom';
+      });
+      loginSlidesState = defaultLoginSlides().concat(customs);
+      saveLoginSlides();
+      renderSlidesList();
+    });
+
+    btnClearCustom.addEventListener('click', function () {
+      loginSlidesState = loginSlidesState.filter(function (x) {
+        return x.kind === 'builtin';
+      });
+      if (loginSlidesState.length === 0) loginSlidesState = defaultLoginSlides();
+      saveLoginSlides();
+      renderSlidesList();
     });
 
     document.body.appendChild(popup);
@@ -253,6 +553,11 @@
       popup.classList.toggle('open');
       overlay.classList.toggle('open');
       if (!isOpen) {
+        loadLoginSlidesFromStorage(function () {
+          renderSlidesList();
+          syncAppearanceButtons();
+          syncPrivacyButtons();
+        });
         var rect = gearBtn.getBoundingClientRect();
         popup.style.top = (rect.bottom + 8) + 'px';
         popup.style.right = (window.innerWidth - rect.right) + 'px';

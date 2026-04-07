@@ -1,14 +1,13 @@
 /* ============================================================
-   SITRUS EX — Dashboard Theme System
-   Themes: Apple (default), Stripe, Linear
+   SITRUS EX — Dashboard（ライト / ダークのみ）
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@300;600;700&display=swap');
 
 /* ============================================================
-   Theme Variables — Apple (default, light)
+   Variables — ライト（既定）
    ============================================================ */
 :root,
-[data-sitrus-theme="apple"] {
+[data-sitrus-appearance="light"] {
   --sitrus-bg: #f5f5f7;
   --sitrus-surface: rgba(255,255,255,0.82);
   --sitrus-surface-hover: rgba(255,255,255,0.95);
@@ -53,56 +52,9 @@
 }
 
 /* ============================================================
-   Theme Variables — Stripe (light, warm purple)
+   Variables — ダーク
    ============================================================ */
-[data-sitrus-theme="stripe"] {
-  --sitrus-bg: #f6f9fc;
-  --sitrus-surface: #ffffff;
-  --sitrus-surface-hover: #f8fafd;
-  --sitrus-surface-active: #ffffff;
-  --sitrus-text: #061b31;
-  --sitrus-text-secondary: #64748d;
-  --sitrus-text-muted: #8898aa;
-  --sitrus-accent: #533afd;
-  --sitrus-accent-hover: #4434d4;
-  --sitrus-border: #e5edf5;
-  --sitrus-navbar-bg: rgba(255,255,255,0.85);
-  --sitrus-navbar-blur: blur(16px);
-  --sitrus-sidebar-bg: #ffffff;
-  --sitrus-sidebar-border: #e5edf5;
-  --sitrus-panel-bg: #ffffff;
-  --sitrus-panel-border: #e5edf5;
-  --sitrus-shadow: 0 2px 5px rgba(50,50,93,0.1), 0 1px 2px rgba(0,0,0,0.06);
-  --sitrus-shadow-lg: 0 6px 18px rgba(50,50,93,0.12), 0 2px 6px rgba(0,0,0,0.06);
-  --sitrus-radius: 8px;
-  --sitrus-radius-sm: 6px;
-  --sitrus-tab-bg: #f0f3f8;
-  --sitrus-tab-active-bg: #ffffff;
-  --sitrus-tab-active-shadow: 0 1px 3px rgba(50,50,93,0.1);
-  --sitrus-tab-text: #8898aa;
-  --sitrus-tab-text-active: #061b31;
-  --sitrus-btn-bg: transparent;
-  --sitrus-btn-hover-bg: #f0f3f8;
-  --sitrus-btn-active-bg: #eef1fc;
-  --sitrus-btn-active-border: #533afd;
-  --sitrus-grid-header: #f7f9fc;
-  --sitrus-grid-even: #ffffff;
-  --sitrus-grid-odd: #fafcfe;
-  --sitrus-grid-hover: rgba(83,58,253,0.04);
-  --sitrus-grid-border: #e5edf5;
-  --sitrus-scrollbar: rgba(50,50,93,0.15);
-  --sitrus-scrollbar-hover: rgba(50,50,93,0.28);
-  --sitrus-modal-bg: #ffffff;
-  --sitrus-badge-bg: #f0f3f8;
-  --sitrus-badge-text: #64748d;
-  --sitrus-navbar-btn-bg: #f0f3f8;
-  --sitrus-navbar-btn-text: #061b31;
-}
-
-/* ============================================================
-   Theme Variables — Linear (dark)
-   ============================================================ */
-[data-sitrus-theme="linear"] {
+[data-sitrus-appearance="dark"] {
   --sitrus-bg: #08090a;
   --sitrus-surface: #0f1011;
   --sitrus-surface-hover: #191a1b;
@@ -428,6 +380,40 @@ button#JpnEngMode.btn.btn-secondary:active {
   font-size: 1.05rem !important;
   color: var(--sitrus-text) !important;
   margin-bottom: 10px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Hide original title icons (replaced by SVG in JS) */
+.jumbotron h3 img,
+._navbar_fixed_top_slide h3 img,
+._navbar_fixed_top_slide1 h3 img,
+._navbar_fixed_top_slide2 h3 img {
+  display: none !important;
+}
+
+/* Page title: same stroke icons as sidebar */
+.jumbotron h3 .sitrus-ex-page-title-icon,
+._navbar_fixed_top_slide h3 .sitrus-ex-page-title-icon,
+._navbar_fixed_top_slide1 h3 .sitrus-ex-page-title-icon,
+._navbar_fixed_top_slide2 h3 .sitrus-ex-page-title-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  width: 22px !important;
+  height: 22px !important;
+}
+.jumbotron h3 .sitrus-ex-page-title-icon svg,
+._navbar_fixed_top_slide h3 .sitrus-ex-page-title-icon svg,
+._navbar_fixed_top_slide1 h3 .sitrus-ex-page-title-icon svg,
+._navbar_fixed_top_slide2 h3 .sitrus-ex-page-title-icon svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke: var(--sitrus-accent) !important;
+  opacity: 0.92 !important;
 }
 
 .jumbotron p {
@@ -550,6 +536,206 @@ main div > p {
   box-shadow: var(--sitrus-shadow-lg) !important;
 }
 
+/* プライバシー: ナビ右上の学籍番号・氏名（#userName）を一時非表示 */
+[data-sitrus-hide-navbar-user="true"] button#userName.btn.btn-info {
+  display: none !important;
+}
+
+/* Yes/No 確認 — SITRUS EX 向けソリッドダイアログ（グラスなし・テーマ変数準拠） */
+.msg_box_overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10050 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)) !important;
+  box-sizing: border-box !important;
+  background: rgba(15, 15, 20, 0.38) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+}
+
+.msg_box_overlay > .modal.msg_box_YesNo {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: min(400px, 100%) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  font-family: inherit !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-dialog {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  pointer-events: auto !important;
+}
+
+/* カード: 不透明サーフェス + 先端のアクセント（拡張のライト/ダークと同じトークン） */
+.msg_box_overlay .msg_box_YesNo .modal-content.modal-content {
+  position: relative !important;
+  height: auto !important;
+  min-height: 0 !important;
+  border-radius: calc(var(--sitrus-radius) + 4px) !important;
+  overflow: hidden !important;
+  border: 1px solid var(--sitrus-border) !important;
+  border-top: 3px solid var(--sitrus-accent) !important;
+  background: var(--sitrus-modal-bg) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+  font-family: inherit !important;
+  color: var(--sitrus-text) !important;
+}
+
+[data-sitrus-appearance="dark"] .msg_box_overlay .msg_box_YesNo .modal-content.modal-content {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-header.jik_kakunin_header,
+.msg_box_overlay .msg_box_YesNo .modal-body1,
+.msg_box_overlay .msg_box_YesNo .modal-footer {
+  position: relative !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-header.jik_kakunin_header {
+  display: block !important;
+  top: auto !important;
+  text-align: left !important;
+  padding: 22px 24px 0 !important;
+  margin: 0 !important;
+  border-bottom: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-title {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 36px 0 0 !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.3 !important;
+  color: var(--sitrus-text) !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-header .close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 12px !important;
+  opacity: 0.45 !important;
+  font-size: 1.35rem !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  padding: 8px !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  background: transparent !important;
+  color: var(--sitrus-text-secondary) !important;
+  text-shadow: none !important;
+  transition: background 0.15s ease, opacity 0.15s ease !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-header .close:hover {
+  opacity: 0.85 !important;
+  background: var(--sitrus-btn-bg) !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-body1 {
+  padding: 12px 24px 8px !important;
+  text-align: left !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .jik_kakunin_body {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: -0.01em !important;
+  text-align: left !important;
+  color: var(--sitrus-text-secondary) !important;
+}
+
+/* DOM 順 は「はい」→「いいえ」— column-reverse で いいえ（キャンセル）を上、はい（確定）を下 */
+.msg_box_overlay .msg_box_YesNo .modal-footer {
+  display: flex !important;
+  flex-direction: column-reverse !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+  padding: 20px 24px 22px !important;
+  margin: 0 !important;
+  border-top: 1px solid var(--sitrus-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 11px 18px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  box-shadow: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease !important;
+}
+
+/* いいえ: ゴースト */
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn-secondary {
+  border: 1px solid var(--sitrus-border) !important;
+  background: var(--sitrus-btn-bg) !important;
+  color: var(--sitrus-text) !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn-secondary:hover {
+  background: var(--sitrus-btn-hover-bg) !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn-secondary:active {
+  background: var(--sitrus-btn-active-bg) !important;
+}
+
+/* はい: アクセント塗り */
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn-primary {
+  border: 1px solid transparent !important;
+  background: var(--sitrus-accent) !important;
+  color: #fff !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn-primary:hover {
+  background: var(--sitrus-accent-hover) !important;
+}
+
+.msg_box_overlay .msg_box_YesNo .modal-footer .btn-primary:active {
+  transform: scale(0.99) !important;
+}
+
 /* ============================================================
    Version badge
    ============================================================ */
@@ -628,13 +814,15 @@ main div > p {
   transform: rotate(45deg) !important;
 }
 
-/* Popup */
+/* 設定ポップアップ */
 .sitrus-ex-theme-popup {
   position: fixed !important;
   top: 50px !important;
   right: 10px !important;
   z-index: 10001 !important;
-  width: 280px !important;
+  width: min(340px, calc(100vw - 20px)) !important;
+  max-height: min(520px, calc(100vh - 80px)) !important;
+  overflow-y: auto !important;
   background: var(--sitrus-modal-bg) !important;
   backdrop-filter: blur(24px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
@@ -650,67 +838,137 @@ main div > p {
 }
 
 .sitrus-ex-theme-popup-title {
-  font-size: 0.72rem !important;
-  font-weight: 600 !important;
-  color: var(--sitrus-text-muted) !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
-  margin-bottom: 10px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: var(--sitrus-text) !important;
+  margin-bottom: 12px !important;
   padding: 0 4px !important;
 }
 
-/* Theme cards */
-.sitrus-ex-theme-card {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  padding: 10px 12px !important;
-  border-radius: var(--sitrus-radius-sm) !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
-  border: 2px solid transparent !important;
-  margin-bottom: 4px !important;
-  background: transparent !important;
+.sitrus-ex-settings-section {
+  margin-bottom: 14px !important;
 }
-.sitrus-ex-theme-card:hover {
+.sitrus-ex-settings-section-title {
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  color: var(--sitrus-text-muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 8px !important;
+  padding: 0 4px !important;
+}
+
+.sitrus-ex-appearance-row {
+  display: flex !important;
+  gap: 8px !important;
+}
+.sitrus-ex-appearance-btn {
+  flex: 1 !important;
+  padding: 8px 10px !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  border: 2px solid var(--sitrus-border) !important;
+  background: var(--sitrus-btn-bg) !important;
+  color: var(--sitrus-text) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+  transition: border-color 0.15s ease, background 0.15s ease !important;
+}
+.sitrus-ex-appearance-btn:hover {
   background: var(--sitrus-btn-hover-bg) !important;
 }
-.sitrus-ex-theme-card.active {
+.sitrus-ex-appearance-btn.active {
   border-color: var(--sitrus-accent) !important;
   background: var(--sitrus-btn-active-bg) !important;
+  color: var(--sitrus-accent) !important;
 }
 
-.sitrus-ex-theme-swatch {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 8px !important;
-  flex-shrink: 0 !important;
+.sitrus-ex-slides-list {
+  max-height: 200px !important;
+  overflow-y: auto !important;
   border: 1px solid var(--sitrus-border) !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  padding: 6px !important;
+  margin-bottom: 8px !important;
+  background: var(--sitrus-panel-bg) !important;
+}
+.sitrus-ex-slide-row {
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  font-weight: 700 !important;
-  font-size: 0.6rem !important;
-  letter-spacing: 0.03em !important;
+  gap: 8px !important;
+  padding: 4px 2px !important;
+  border-radius: 6px !important;
+  margin-bottom: 2px !important;
 }
-
-.sitrus-ex-theme-info {
+.sitrus-ex-slide-row:hover {
+  background: var(--sitrus-btn-hover-bg) !important;
+}
+.sitrus-ex-slide-thumb {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 6px !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+  border: 1px solid var(--sitrus-border) !important;
+  background: var(--sitrus-bg) !important;
+}
+.sitrus-ex-slide-label {
   flex: 1 !important;
   min-width: 0 !important;
+  font-size: 0.72rem !important;
+  color: var(--sitrus-text-secondary) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
-
-.sitrus-ex-theme-name {
-  font-size: 0.82rem !important;
-  font-weight: 600 !important;
+.sitrus-ex-slide-actions {
+  display: flex !important;
+  gap: 2px !important;
+  flex-shrink: 0 !important;
+}
+.sitrus-ex-slide-actions button {
+  padding: 2px 6px !important;
+  font-size: 0.7rem !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--sitrus-border) !important;
+  background: var(--sitrus-btn-bg) !important;
   color: var(--sitrus-text) !important;
-  line-height: 1.3 !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+}
+.sitrus-ex-slide-actions button:hover {
+  background: var(--sitrus-btn-hover-bg) !important;
 }
 
-.sitrus-ex-theme-desc {
-  font-size: 0.68rem !important;
+.sitrus-ex-settings-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+.sitrus-ex-settings-file {
+  display: none !important;
+}
+.sitrus-ex-settings-btn-secondary {
+  padding: 6px 10px !important;
+  font-size: 0.72rem !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  background: var(--sitrus-btn-bg) !important;
+  color: var(--sitrus-text) !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+}
+.sitrus-ex-settings-btn-secondary:hover {
+  background: var(--sitrus-btn-hover-bg) !important;
+}
+
+.sitrus-ex-settings-hint {
+  font-size: 0.65rem !important;
   color: var(--sitrus-text-muted) !important;
-  line-height: 1.3 !important;
-  margin-top: 1px !important;
+  line-height: 1.4 !important;
+  margin-top: 8px !important;
+  padding: 0 4px !important;
 }
 
 /* Overlay to close popup */
