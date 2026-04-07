@@ -23,9 +23,10 @@
 
 ## インストール方法
 
-### Chrome ウェブストアから入れる場合
+### Chrome ウェブストアから入れる場合（推奨）
 
-（公開されたら）ストアの案内に従って **Chrome に追加** してください。
+1. [Chrome ウェブストアの SITRUS EX](https://chromewebstore.google.com/detail/sitrus-ex/bdlkmlocldjjefgkbniekllkgemohcoh?hl=ja) を開きます。
+2. **Chrome に追加** をクリックして、表示に従ってインストールします。
 
 ### 配布されたフォルダ（ZIP など）から入れる場合
 
