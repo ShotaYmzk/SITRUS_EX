@@ -1,0 +1,726 @@
+/* ============================================================
+   SITRUS EX — Dashboard Theme System
+   Themes: Apple (default), Stripe, Linear
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@300;600;700&display=swap');
+
+/* ============================================================
+   Theme Variables — Apple (default, light)
+   ============================================================ */
+:root,
+[data-sitrus-theme="apple"] {
+  --sitrus-bg: #f5f5f7;
+  --sitrus-surface: rgba(255,255,255,0.82);
+  --sitrus-surface-hover: rgba(255,255,255,0.95);
+  --sitrus-surface-active: rgba(255,255,255,1);
+  --sitrus-text: #1d1d1f;
+  --sitrus-text-secondary: rgba(0,0,0,0.56);
+  --sitrus-text-muted: rgba(0,0,0,0.36);
+  --sitrus-accent: #0071e3;
+  --sitrus-accent-hover: #0077ED;
+  --sitrus-border: rgba(0,0,0,0.08);
+  --sitrus-navbar-bg: rgba(255,255,255,0.72);
+  --sitrus-navbar-blur: blur(20px) saturate(180%);
+  --sitrus-sidebar-bg: rgba(255,255,255,0.6);
+  --sitrus-sidebar-border: rgba(0,0,0,0.06);
+  --sitrus-panel-bg: rgba(255,255,255,0.55);
+  --sitrus-panel-border: rgba(0,0,0,0.06);
+  --sitrus-shadow: 0 1px 8px rgba(0,0,0,0.04);
+  --sitrus-shadow-lg: 0 4px 24px rgba(0,0,0,0.06);
+  --sitrus-radius: 14px;
+  --sitrus-radius-sm: 10px;
+  --sitrus-tab-bg: rgba(0,0,0,0.04);
+  --sitrus-tab-active-bg: rgba(255,255,255,0.92);
+  --sitrus-tab-active-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  --sitrus-tab-text: rgba(0,0,0,0.4);
+  --sitrus-tab-text-active: #1d1d1f;
+  --sitrus-btn-bg: rgba(0,0,0,0.03);
+  --sitrus-btn-hover-bg: rgba(0,0,0,0.06);
+  --sitrus-btn-active-bg: rgba(0,0,0,0.08);
+  --sitrus-btn-active-border: #0071e3;
+  --sitrus-grid-header: rgba(245,245,247,0.95);
+  --sitrus-grid-even: rgba(255,255,255,0.7);
+  --sitrus-grid-odd: rgba(245,245,247,0.5);
+  --sitrus-grid-hover: rgba(0,113,227,0.06);
+  --sitrus-grid-border: rgba(0,0,0,0.04);
+  --sitrus-scrollbar: rgba(0,0,0,0.12);
+  --sitrus-scrollbar-hover: rgba(0,0,0,0.22);
+  --sitrus-modal-bg: rgba(255,255,255,0.92);
+  --sitrus-badge-bg: rgba(255,255,255,0.6);
+  --sitrus-badge-text: rgba(60,60,67,0.8);
+  --sitrus-navbar-btn-bg: rgba(0,0,0,0.04);
+  --sitrus-navbar-btn-text: rgba(0,0,0,0.72);
+}
+
+/* ============================================================
+   Theme Variables — Stripe (light, warm purple)
+   ============================================================ */
+[data-sitrus-theme="stripe"] {
+  --sitrus-bg: #f6f9fc;
+  --sitrus-surface: #ffffff;
+  --sitrus-surface-hover: #f8fafd;
+  --sitrus-surface-active: #ffffff;
+  --sitrus-text: #061b31;
+  --sitrus-text-secondary: #64748d;
+  --sitrus-text-muted: #8898aa;
+  --sitrus-accent: #533afd;
+  --sitrus-accent-hover: #4434d4;
+  --sitrus-border: #e5edf5;
+  --sitrus-navbar-bg: rgba(255,255,255,0.85);
+  --sitrus-navbar-blur: blur(16px);
+  --sitrus-sidebar-bg: #ffffff;
+  --sitrus-sidebar-border: #e5edf5;
+  --sitrus-panel-bg: #ffffff;
+  --sitrus-panel-border: #e5edf5;
+  --sitrus-shadow: 0 2px 5px rgba(50,50,93,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --sitrus-shadow-lg: 0 6px 18px rgba(50,50,93,0.12), 0 2px 6px rgba(0,0,0,0.06);
+  --sitrus-radius: 8px;
+  --sitrus-radius-sm: 6px;
+  --sitrus-tab-bg: #f0f3f8;
+  --sitrus-tab-active-bg: #ffffff;
+  --sitrus-tab-active-shadow: 0 1px 3px rgba(50,50,93,0.1);
+  --sitrus-tab-text: #8898aa;
+  --sitrus-tab-text-active: #061b31;
+  --sitrus-btn-bg: transparent;
+  --sitrus-btn-hover-bg: #f0f3f8;
+  --sitrus-btn-active-bg: #eef1fc;
+  --sitrus-btn-active-border: #533afd;
+  --sitrus-grid-header: #f7f9fc;
+  --sitrus-grid-even: #ffffff;
+  --sitrus-grid-odd: #fafcfe;
+  --sitrus-grid-hover: rgba(83,58,253,0.04);
+  --sitrus-grid-border: #e5edf5;
+  --sitrus-scrollbar: rgba(50,50,93,0.15);
+  --sitrus-scrollbar-hover: rgba(50,50,93,0.28);
+  --sitrus-modal-bg: #ffffff;
+  --sitrus-badge-bg: #f0f3f8;
+  --sitrus-badge-text: #64748d;
+  --sitrus-navbar-btn-bg: #f0f3f8;
+  --sitrus-navbar-btn-text: #061b31;
+}
+
+/* ============================================================
+   Theme Variables — Linear (dark)
+   ============================================================ */
+[data-sitrus-theme="linear"] {
+  --sitrus-bg: #08090a;
+  --sitrus-surface: #0f1011;
+  --sitrus-surface-hover: #191a1b;
+  --sitrus-surface-active: #1e1f21;
+  --sitrus-text: #f7f8f8;
+  --sitrus-text-secondary: #8a8f98;
+  --sitrus-text-muted: #62666d;
+  --sitrus-accent: #7170ff;
+  --sitrus-accent-hover: #828fff;
+  --sitrus-border: rgba(255,255,255,0.08);
+  --sitrus-navbar-bg: rgba(15,16,17,0.85);
+  --sitrus-navbar-blur: blur(20px) saturate(150%);
+  --sitrus-sidebar-bg: #0f1011;
+  --sitrus-sidebar-border: rgba(255,255,255,0.06);
+  --sitrus-panel-bg: #0f1011;
+  --sitrus-panel-border: rgba(255,255,255,0.06);
+  --sitrus-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  --sitrus-shadow-lg: 0 4px 20px rgba(0,0,0,0.4);
+  --sitrus-radius: 8px;
+  --sitrus-radius-sm: 6px;
+  --sitrus-tab-bg: rgba(255,255,255,0.04);
+  --sitrus-tab-active-bg: rgba(255,255,255,0.08);
+  --sitrus-tab-active-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --sitrus-tab-text: #62666d;
+  --sitrus-tab-text-active: #f7f8f8;
+  --sitrus-btn-bg: rgba(255,255,255,0.03);
+  --sitrus-btn-hover-bg: rgba(255,255,255,0.06);
+  --sitrus-btn-active-bg: rgba(255,255,255,0.08);
+  --sitrus-btn-active-border: #5e6ad2;
+  --sitrus-grid-header: #141516;
+  --sitrus-grid-even: #0f1011;
+  --sitrus-grid-odd: #121314;
+  --sitrus-grid-hover: rgba(113,112,255,0.06);
+  --sitrus-grid-border: rgba(255,255,255,0.05);
+  --sitrus-scrollbar: rgba(255,255,255,0.1);
+  --sitrus-scrollbar-hover: rgba(255,255,255,0.2);
+  --sitrus-modal-bg: #191a1b;
+  --sitrus-badge-bg: rgba(255,255,255,0.06);
+  --sitrus-badge-text: #8a8f98;
+  --sitrus-navbar-btn-bg: rgba(255,255,255,0.06);
+  --sitrus-navbar-btn-text: #d0d6e0;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+html { min-height: 100vh !important; }
+
+body {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  background: var(--sitrus-bg) !important;
+  color: var(--sitrus-text) !important;
+  min-height: 100vh !important;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--sitrus-scrollbar); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sitrus-scrollbar-hover); }
+
+/* ============================================================
+   Navbar
+   ============================================================ */
+nav.navbar.navbar-light.bg-light.fixed-top {
+  background: var(--sitrus-navbar-bg) !important;
+  backdrop-filter: var(--sitrus-navbar-blur) !important;
+  -webkit-backdrop-filter: var(--sitrus-navbar-blur) !important;
+  border-bottom: 1px solid var(--sitrus-border) !important;
+  box-shadow: var(--sitrus-shadow) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+}
+
+.sitrus-ex-brand {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  letter-spacing: 0.1em !important;
+  color: var(--sitrus-text) !important;
+  vertical-align: middle !important;
+}
+
+button#userName.btn.btn-info,
+button#JpnEngMode.btn.btn-secondary {
+  position: relative !important;
+  background: linear-gradient(
+    -75deg,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.05)
+  ) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  border: none !important;
+  border-radius: 999vw !important;
+  color: var(--sitrus-navbar-btn-text) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  padding: 6px 18px !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.45),
+    inset 0 -1px 1px rgba(0,0,0,0.04),
+    0 1px 4px rgba(0,0,0,0.08) !important;
+  transition: all 0.25s cubic-bezier(0.25,1,0.5,1) !important;
+}
+button#userName.btn.btn-info {
+  font-size: 0.76rem !important;
+}
+button#JpnEngMode.btn.btn-secondary {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif !important;
+  font-size: 0.73rem !important;
+}
+
+button#userName.btn.btn-info:hover,
+button#JpnEngMode.btn.btn-secondary:hover {
+  transform: scale(0.97) !important;
+  background: linear-gradient(
+    -75deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.28),
+    rgba(255,255,255,0.08)
+  ) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.5),
+    inset 0 -1px 1px rgba(0,0,0,0.06),
+    0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+button#userName.btn.btn-info:active,
+button#JpnEngMode.btn.btn-secondary:active {
+  transform: scale(0.95) !important;
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.sidebar-sticky {
+  background: var(--sitrus-sidebar-bg) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: var(--sitrus-radius) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+  border: 1px solid var(--sitrus-sidebar-border) !important;
+  padding: 10px !important;
+  color: var(--sitrus-text) !important;
+}
+
+/* Tabs */
+.sidebar-sticky .nav-tabs,
+.nav-tabs {
+  background: var(--sitrus-tab-bg) !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  border-bottom: none !important;
+  display: flex !important;
+  gap: 3px !important;
+  padding: 4px !important;
+  margin: 0 0 12px 0 !important;
+}
+
+.sidebar-sticky .nav-tabs .nav-item {
+  flex: 1 !important;
+  margin-bottom: 0 !important;
+}
+
+.sidebar-sticky .nav-tabs .nav-item .nav-link {
+  display: block !important;
+  text-align: center !important;
+  padding: 8px 4px !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: calc(var(--sitrus-radius-sm) - 2px) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.78rem !important;
+  color: var(--sitrus-tab-text) !important;
+  background: transparent !important;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
+  white-space: nowrap !important;
+  line-height: 1.4 !important;
+}
+
+.sidebar-sticky .nav-tabs .nav-item .nav-link:hover {
+  color: var(--sitrus-text-secondary) !important;
+  background: var(--sitrus-surface-hover) !important;
+  border: none !important;
+}
+
+.sidebar-sticky .nav-tabs .nav-item .nav-link.active {
+  color: var(--sitrus-tab-text-active) !important;
+  background: var(--sitrus-tab-active-bg) !important;
+  font-weight: 600 !important;
+  box-shadow: var(--sitrus-tab-active-shadow) !important;
+  border: none !important;
+}
+
+.sidebar-sticky .tab-content,
+.tab-content {
+  background: transparent !important;
+}
+
+.sidebar-sticky .tab-pane,
+.tab-pane {
+  background: transparent !important;
+  padding: 0 !important;
+  font-size: 0.8rem !important;
+}
+
+/* Sidebar buttons */
+.sidebar-sticky a.btn.btn-dark.button_list,
+.sidebar-sticky a.btn.btn-sm.btn-dark.button_list,
+.sidebar-sticky .tab-content a.btn.btn-dark,
+.sidebar .btn.btn-dark.button_list {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: var(--sitrus-btn-bg) !important;
+  border: none !important;
+  border-left: 3px solid transparent !important;
+  color: var(--sitrus-text-secondary) !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  padding: 9px 10px !important;
+  margin-bottom: 2px !important;
+  margin-top: 0 !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  line-height: 1.4 !important;
+}
+
+/* SVG sidebar icons */
+.sitrus-ex-sidebar-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+.sitrus-ex-sidebar-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  opacity: 0.55 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+/* Hide original img icons */
+.sidebar-sticky a.btn.btn-dark.button_list img,
+.sidebar-sticky a.btn.btn-sm.btn-dark.button_list img,
+.sidebar .btn.btn-dark.button_list img {
+  display: none !important;
+}
+
+/* Hover */
+.sidebar-sticky a.btn.btn-dark.button_list:hover,
+.sidebar-sticky a.btn.btn-sm.btn-dark.button_list:hover,
+.sidebar .btn.btn-dark.button_list:hover {
+  color: var(--sitrus-text) !important;
+  background: var(--sitrus-btn-hover-bg) !important;
+  border-left-color: var(--sitrus-accent) !important;
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+  text-decoration: none !important;
+}
+.sidebar-sticky a.btn.btn-dark.button_list:hover .sitrus-ex-sidebar-icon svg,
+.sidebar .btn.btn-dark.button_list:hover .sitrus-ex-sidebar-icon svg {
+  opacity: 0.85 !important;
+}
+
+/* Active page */
+.sidebar-sticky a.btn.btn-dark.button_list.sitrus-ex-active,
+.sidebar .btn.btn-dark.button_list.sitrus-ex-active {
+  color: var(--sitrus-text) !important;
+  background: var(--sitrus-btn-active-bg) !important;
+  font-weight: 600 !important;
+  border-left-color: var(--sitrus-btn-active-border) !important;
+  box-shadow: var(--sitrus-shadow) !important;
+}
+.sidebar-sticky a.btn.btn-dark.button_list.sitrus-ex-active .sitrus-ex-sidebar-icon svg,
+.sidebar .btn.btn-dark.button_list.sitrus-ex-active .sitrus-ex-sidebar-icon svg {
+  opacity: 1 !important;
+  color: var(--sitrus-accent) !important;
+}
+
+/* ============================================================
+   Main content panels
+   ============================================================ */
+._navbar_fixed_top_slide,
+._navbar_fixed_top_slide1,
+._navbar_fixed_top_slide2 {
+  background: var(--sitrus-panel-bg) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: var(--sitrus-radius) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+  border: 1px solid var(--sitrus-panel-border) !important;
+}
+
+/* ============================================================
+   Jumbotron
+   ============================================================ */
+.jumbotron {
+  background: var(--sitrus-surface) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  border-radius: var(--sitrus-radius) !important;
+  box-shadow: var(--sitrus-shadow) !important;
+  padding: 22px 26px !important;
+  margin: 10px !important;
+  font-size: 14px !important;
+}
+
+.jumbotron h3 {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+  color: var(--sitrus-text) !important;
+  margin-bottom: 10px !important;
+}
+
+.jumbotron p {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  font-size: 0.8rem !important;
+  line-height: 1.75 !important;
+  color: var(--sitrus-text-secondary) !important;
+  margin-bottom: 2px !important;
+}
+
+.jumbotron a { color: var(--sitrus-accent) !important; }
+.jumbotron a:hover { color: var(--sitrus-accent-hover) !important; }
+
+/* Action buttons */
+.btn.btn-primary.button_ex,
+button.btn.btn-primary.button_ex {
+  background: var(--sitrus-surface) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  color: var(--sitrus-text) !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+.btn.btn-primary.button_ex:hover,
+button.btn.btn-primary.button_ex:hover {
+  background: var(--sitrus-surface-hover) !important;
+  box-shadow: var(--sitrus-shadow) !important;
+}
+
+/* ============================================================
+   ag-Grid
+   ============================================================ */
+.ag-theme-balham {
+  border-radius: var(--sitrus-radius-sm) !important;
+  overflow: hidden !important;
+  border: 1px solid var(--sitrus-grid-border) !important;
+  box-shadow: var(--sitrus-shadow) !important;
+}
+
+.ag-theme-balham,
+.ag-theme-balham .ag-header,
+.ag-theme-balham .ag-header-cell,
+.ag-theme-balham .ag-row,
+.ag-theme-balham .ag-cell {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+}
+
+.ag-theme-balham .ag-header {
+  background: var(--sitrus-grid-header) !important;
+  border-bottom: 1px solid var(--sitrus-grid-border) !important;
+}
+
+.ag-theme-balham .ag-header-cell-label {
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  color: var(--sitrus-text-secondary) !important;
+}
+
+.ag-theme-balham .ag-row {
+  border-color: var(--sitrus-grid-border) !important;
+  font-size: 0.78rem !important;
+  color: var(--sitrus-text) !important;
+}
+
+.ag-theme-balham .ag-row-even { background: var(--sitrus-grid-even) !important; }
+.ag-theme-balham .ag-row-odd { background: var(--sitrus-grid-odd) !important; }
+.ag-theme-balham .ag-row:hover { background: var(--sitrus-grid-hover) !important; }
+
+.ag-theme-balham .ag-paging-panel {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  border-top: 1px solid var(--sitrus-grid-border) !important;
+  color: var(--sitrus-text-secondary) !important;
+}
+
+/* ============================================================
+   Notes / legend
+   ============================================================ */
+main p,
+main div > p {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  color: var(--sitrus-text-secondary) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.7 !important;
+}
+
+/* ============================================================
+   Modal / msg_box
+   ============================================================ */
+.modal-content {
+  border-radius: var(--sitrus-radius) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  background: var(--sitrus-modal-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  overflow: hidden !important;
+  color: var(--sitrus-text) !important;
+}
+
+.modal-header { border-bottom: 1px solid var(--sitrus-border) !important; }
+.modal-footer { border-top: 1px solid var(--sitrus-border) !important; }
+
+.msg_box {
+  border-radius: var(--sitrus-radius) !important;
+  background: var(--sitrus-modal-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  border: 1px solid var(--sitrus-border) !important;
+  color: var(--sitrus-text) !important;
+}
+
+.msg_box_YesNo {
+  border-radius: var(--sitrus-radius) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+}
+
+/* ============================================================
+   Version badge
+   ============================================================ */
+#sitrus-ex-version {
+  position: fixed !important;
+  bottom: 14px !important;
+  right: 14px !important;
+  z-index: 9999 !important;
+  border-radius: 999vw !important;
+  padding: 5px 14px !important;
+  font-family: 'Outfit', sans-serif !important;
+  color: var(--sitrus-badge-text) !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+  pointer-events: none !important;
+  background: var(--sitrus-badge-bg) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  box-shadow: var(--sitrus-shadow) !important;
+}
+
+/* ============================================================
+   Settings button + Theme picker popup
+   ============================================================ */
+.sitrus-ex-settings-btn {
+  position: relative !important;
+  background: linear-gradient(
+    -75deg,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.05)
+  ) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  border: none !important;
+  color: var(--sitrus-navbar-btn-text) !important;
+  border-radius: 999vw !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  margin-left: 4px !important;
+  flex-shrink: 0 !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.45),
+    inset 0 -1px 1px rgba(0,0,0,0.04),
+    0 1px 4px rgba(0,0,0,0.08) !important;
+  transition: all 0.25s cubic-bezier(0.25,1,0.5,1) !important;
+}
+.sitrus-ex-settings-btn:hover {
+  transform: scale(0.95) !important;
+  background: linear-gradient(
+    -75deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.28),
+    rgba(255,255,255,0.08)
+  ) !important;
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.5),
+    inset 0 -1px 1px rgba(0,0,0,0.06),
+    0 2px 8px rgba(0,0,0,0.1) !important;
+}
+.sitrus-ex-settings-btn svg {
+  width: 15px !important;
+  height: 15px !important;
+  fill: currentColor !important;
+  transition: transform 0.3s ease !important;
+}
+.sitrus-ex-settings-btn:hover svg {
+  transform: rotate(45deg) !important;
+}
+
+/* Popup */
+.sitrus-ex-theme-popup {
+  position: fixed !important;
+  top: 50px !important;
+  right: 10px !important;
+  z-index: 10001 !important;
+  width: 280px !important;
+  background: var(--sitrus-modal-bg) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+  border: 1px solid var(--sitrus-border) !important;
+  border-radius: var(--sitrus-radius) !important;
+  box-shadow: var(--sitrus-shadow-lg) !important;
+  padding: 14px !important;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif !important;
+  display: none;
+}
+.sitrus-ex-theme-popup.open {
+  display: block;
+}
+
+.sitrus-ex-theme-popup-title {
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  color: var(--sitrus-text-muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  margin-bottom: 10px !important;
+  padding: 0 4px !important;
+}
+
+/* Theme cards */
+.sitrus-ex-theme-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 12px !important;
+  border-radius: var(--sitrus-radius-sm) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  border: 2px solid transparent !important;
+  margin-bottom: 4px !important;
+  background: transparent !important;
+}
+.sitrus-ex-theme-card:hover {
+  background: var(--sitrus-btn-hover-bg) !important;
+}
+.sitrus-ex-theme-card.active {
+  border-color: var(--sitrus-accent) !important;
+  background: var(--sitrus-btn-active-bg) !important;
+}
+
+.sitrus-ex-theme-swatch {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  flex-shrink: 0 !important;
+  border: 1px solid var(--sitrus-border) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+  font-size: 0.6rem !important;
+  letter-spacing: 0.03em !important;
+}
+
+.sitrus-ex-theme-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.sitrus-ex-theme-name {
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  color: var(--sitrus-text) !important;
+  line-height: 1.3 !important;
+}
+
+.sitrus-ex-theme-desc {
+  font-size: 0.68rem !important;
+  color: var(--sitrus-text-muted) !important;
+  line-height: 1.3 !important;
+  margin-top: 1px !important;
+}
+
+/* Overlay to close popup */
+.sitrus-ex-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  background: transparent !important;
+  display: none;
+}
+.sitrus-ex-overlay.open {
+  display: block;
+}
